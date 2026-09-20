@@ -53,12 +53,21 @@ function PickActivity({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundIdx, pool, options]);
 
+  const { level, poke } = useIdleHint(roundIdx);
+
   useEffect(() => {
     speak(promptText(board.target));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board]);
 
+  useEffect(() => {
+    if (level === 1) sounds.sparkle();
+    if (level === 2) speak(promptText(board.target));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level]);
+
   const handle = (item: Item) => {
+    poke();
     if (item.id === board.target.id) {
       setHit(item.id);
       sounds.yay();
@@ -88,12 +97,13 @@ function PickActivity({
         )}
         <span className="text-4xl">👉</span>
       </Prompt>
-      <TileGrid cols={board.opts.length > 2 ? 2 : 2}>
+      <TileGrid cols={2}>
         {board.opts.map((o) => (
           <Tile
             key={o.id}
             bg={o.bg}
             onClick={() => handle(o)}
+            hint={level > 0 && o.id === board.target.id && !hit}
             state={hit === o.id ? "happy" : wrong === o.id ? "wiggle" : "idle"}
           >
             {o.emoji ?? ""}
