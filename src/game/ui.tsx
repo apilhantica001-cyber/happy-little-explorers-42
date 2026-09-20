@@ -35,14 +35,14 @@ export function Tile({
 }: {
   onClick: () => void;
   children: ReactNode;
-  bg?: string;
-  state?: "idle" | "happy" | "wiggle" | "done";
+  bg?: string | undefined;
+  state?: "idle" | "happy" | "wiggle" | "done" | undefined;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      style={bg ? { background: bg } : undefined}
+      style={bg ? { background: bg } : {}}
       className={[
         "flex aspect-square w-full select-none items-center justify-center rounded-4xl text-[clamp(3rem,18vw,6rem)] shadow-soft transition-transform active:scale-95",
         bg ? "" : "bg-card",

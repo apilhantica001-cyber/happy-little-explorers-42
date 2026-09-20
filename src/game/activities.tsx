@@ -98,7 +98,7 @@ function PickActivity({
 
   const board = useMemo(() => {
     const opts = pick(pool, options);
-    const target = opts[Math.floor(Math.random() * opts.length)];
+    const target = opts[Math.floor(Math.random() * opts.length)]!;
     return { opts, target };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundIdx, pool, options]);
@@ -212,7 +212,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
   const [hit, setHit] = useState<number | null>(null);
 
   const board = useMemo(() => {
-    const item = pick([...ANIMALS, ...FRUITS, ...OBJECTS], 1)[0];
+    const item = pick([...ANIMALS, ...FRUITS, ...OBJECTS], 1)[0]!;
     const bigFirst = Math.random() > 0.5;
     return { item, bigFirst };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -275,7 +275,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
 function CountActivity({ onComplete }: ActivityProps) {
   const [roundIdx, setRoundIdx] = useState(0);
   const board = useMemo(() => {
-    const item = pick([...FRUITS, ...OBJECTS, ...NATURE], 1)[0];
+    const item = pick([...FRUITS, ...OBJECTS, ...NATURE], 1)[0]!;
     const total = 1 + Math.floor(Math.random() * 3);
     return { item, total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -338,8 +338,8 @@ function AssociationActivity({ onComplete }: ActivityProps) {
 
   const board = useMemo(() => {
     const chosen = pick(PAIRS, 3);
-    const target = chosen[0];
-    const opts = shuffle([target.b, chosen[1].b, chosen[2].b]);
+    const target = chosen[0]!;
+    const opts = shuffle([target.b, chosen[1]!.b, chosen[2]!.b]);
     return { target, opts };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundIdx]);
@@ -414,7 +414,7 @@ function MemoryActivity({ onComplete }: ActivityProps) {
     const next = [...open, card.key];
     setOpen(next);
     if (next.length === 2) {
-      const [a, b] = next.map((k) => board.cards.find((c) => c.key === k)!);
+      const [a, b] = next.map((k) => board.cards.find((c) => c.key === k)!) as [typeof board.cards[number], typeof board.cards[number]];
       if (a.id === b.id) {
         sounds.yay();
         speak(praise());
@@ -452,10 +452,10 @@ function MemoryActivity({ onComplete }: ActivityProps) {
             <Tile
               key={c.key}
               onClick={() => flip(c)}
-              bg={shown ? undefined : "var(--gradient-card)"}
+              bg={shown ? "" : "var(--gradient-card)"}
               state={found.includes(c.id) ? "happy" : "idle"}
             >
-              {shown ? c.emoji : "❔"}
+              {shown ? (c.emoji ?? "") : "❔"}
             </Tile>
           );
         })}
@@ -470,7 +470,7 @@ function PopActivity({ onComplete }: ActivityProps) {
     () =>
       Array.from({ length: 6 }).map((_, i) => ({
         key: i,
-        emoji: pick(NATURE, 1)[0].emoji!,
+        emoji: pick(NATURE, 1)[0]!.emoji!,
         left: 6 + Math.random() * 74,
         top: 6 + Math.random() * 68,
         delay: Math.random() * 1.5,

@@ -33,7 +33,7 @@ function Game() {
   const [round, setRound] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
 
-  const activity = ACTIVITIES[order[step % order.length]];
+  const activity = ACTIVITIES[order[step % order.length]!]!;
 
   const handleComplete = useCallback(() => {
     setCelebrating(true);
