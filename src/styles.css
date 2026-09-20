@@ -132,13 +132,74 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* ---------- Kids game design system ---------- */
+:root {
+  --background: oklch(0.97 0.03 200);
+  --foreground: oklch(0.32 0.08 280);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.32 0.08 280);
+  --primary: oklch(0.68 0.2 25);
+  --primary-foreground: oklch(0.99 0.01 100);
+  --joy-sky: oklch(0.88 0.09 220);
+  --joy-mint: oklch(0.88 0.1 160);
+  --joy-sun: oklch(0.9 0.14 95);
+  --joy-bubble: oklch(0.86 0.1 330);
+  --gradient-sky: linear-gradient(170deg, var(--joy-sky), var(--joy-mint) 55%, var(--joy-sun));
+  --gradient-card: linear-gradient(145deg, var(--joy-bubble), var(--joy-sky));
+  --gradient-play: linear-gradient(135deg, oklch(0.75 0.19 35), oklch(0.72 0.2 350));
+}
+
+@theme inline {
+  --font-display: "Baloo 2", "Comic Sans MS", system-ui, sans-serif, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji";
+  --color-joy-sky: var(--joy-sky);
+  --color-joy-mint: var(--joy-mint);
+  --color-joy-sun: var(--joy-sun);
+  --color-joy-bubble: var(--joy-bubble);
+  --shadow-soft: 0 10px 24px -8px oklch(0.4 0.1 280 / 0.35);
+  --animate-pop: pop 0.6s ease-out;
+  --animate-wiggle: wiggle 0.5s ease-in-out;
+  --animate-bob: bob 2.4s ease-in-out infinite;
+  --animate-float: float 3.2s ease-in-out infinite;
+  --animate-rise: rise 1.6s ease-out forwards;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.22) rotate(-4deg); }
+  100% { transform: scale(1); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px) rotate(-4deg); }
+  75% { transform: translateX(10px) rotate(4deg); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-14px) scale(1.05); }
+}
+@keyframes rise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-110vh) scale(1.2) rotate(30deg); opacity: 0; }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
   }
 
   body {
-    background-color: var(--color-background);
+    background: var(--gradient-sky);
+    background-attachment: fixed;
     color: var(--color-foreground);
+    font-family: var(--font-display);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+    user-select: none;
   }
 }
