@@ -77,7 +77,7 @@ const OBJECTS: Item[] = [
 ];
 
 const PRAISE = ["Muito bem!", "Isso mesmo!", "Boa!", "Uau!", "Parabéns!"];
-const praise = () => PRAISE[Math.floor(Math.random() * PRAISE.length)];
+const praise = () => PRAISE[Math.floor(Math.random() * PRAISE.length)]!;
 
 /* ---------- Generic: pick the target among options ---------- */
 function PickActivity({
