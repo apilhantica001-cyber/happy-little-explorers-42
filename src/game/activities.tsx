@@ -489,23 +489,18 @@ export const ACTIVITIES: Activity[] = [
       <PickActivity {...p} pool={COLORS} promptText={(t) => `Cadê a cor ${t.label}?`} />
     ),
   },
-  {
-    id: "formas",
-    icon: "🔷",
-    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => `Cadê o ${t.label}?`} />,
-  },
+  { id: "encaixar", icon: "🧩", render: (p) => <ShapeFitActivity {...p} /> },
   {
     id: "animais",
     icon: "🐮",
-    render: (p) => <ExploreActivity {...p} pool={ANIMALS} />,
+    render: (p) => <ExploreActivity {...p} pool={ANIMALS} onTapSound={playAnimal} noSpeak />,
   },
+  { id: "estrela", icon: "⭐", render: (p) => <SwipeStarActivity {...p} /> },
+  { id: "cestinha", icon: "🧺", render: (p) => <BasketActivity {...p} /> },
   { id: "tamanhos", icon: "📏", render: (p) => <SizesActivity {...p} /> },
-  {
-    id: "frutas",
-    icon: "🍓",
-    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => `Cadê a ${t.label}?`} />,
-  },
-  { id: "numeros", icon: "🔢", render: (p) => <CountActivity {...p} /> },
+  { id: "surpresa", icon: "🎁", render: (p) => <SurpriseBoxActivity {...p} /> },
+  { id: "memoria", icon: "🧠", render: (p) => <MemoryActivity {...p} /> },
+  { id: "cortina", icon: "🪟", render: (p) => <CurtainActivity {...p} /> },
   {
     id: "instrumentos",
     icon: "🎵",
@@ -520,9 +515,24 @@ export const ACTIVITIES: Activity[] = [
       />
     ),
   },
+  {
+    id: "formas",
+    icon: "🔷",
+    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => `Cadê o ${t.label}?`} />,
+  },
+  {
+    id: "frutas",
+    icon: "🍓",
+    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => `Cadê a ${t.label}?`} />,
+  },
+  { id: "numeros", icon: "🔢", render: (p) => <CountActivity {...p} /> },
   { id: "associacao", icon: "🔗", render: (p) => <AssociationActivity {...p} /> },
-  { id: "memoria", icon: "🧠", render: (p) => <MemoryActivity {...p} /> },
   { id: "natureza", icon: "🌈", render: (p) => <PopActivity {...p} /> },
+  {
+    id: "corpo",
+    icon: "👀",
+    render: (p) => <ExploreActivity {...p} pool={BODY} />,
+  },
   {
     id: "objetos",
     icon: "🧸",
