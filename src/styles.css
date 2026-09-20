@@ -150,7 +150,7 @@
 }
 
 @theme inline {
-  --font-display: "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+  --font-display: "Baloo 2", "Comic Sans MS", system-ui, sans-serif, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji";
   --color-joy-sky: var(--joy-sky);
   --color-joy-mint: var(--joy-mint);
   --color-joy-sun: var(--joy-sun);
