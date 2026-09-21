@@ -120,7 +120,13 @@ function ExploreActivity({
   pool,
   count = 4,
   onTapSound,
-}: ActivityProps & { pool: Item[]; count?: number; onTapSound?: (item: Item) => void }) {
+  noSpeak = false,
+}: ActivityProps & {
+  pool: Item[];
+  count?: number;
+  onTapSound?: (item: Item) => void;
+  noSpeak?: boolean;
+}) {
   const items = useMemo(() => pick(pool, count), [pool, count]);
   const [done, setDone] = useState<string[]>([]);
   const [hit, setHit] = useState<string | null>(null);
@@ -130,7 +136,7 @@ function ExploreActivity({
     window.setTimeout(() => setHit(null), 600);
     if (onTapSound) onTapSound(item);
     else sounds.pop();
-    speak(item.say ?? item.label);
+    if (!noSpeak) speak(item.say ?? item.label);
     if (!done.includes(item.id)) {
       const next = [...done, item.id];
       setDone(next);
@@ -374,7 +380,12 @@ function MemoryActivity({ onComplete }: ActivityProps) {
     const next = [...open, card.key];
     setOpen(next);
     if (next.length === 2) {
-      const [a, b] = next.map((k) => board.cards.find((c) => c.key === k)!) as [typeof board.cards[number], typeof board.cards[number]];
+      const a = board.cards.find((c) => c.key === next[0]);
+      const b = board.cards.find((c) => c.key === next[1]);
+      if (!a || !b) {
+        setOpen([]);
+        return;
+      }
       if (a.id === b.id) {
         sounds.yay();
         speak(praise());
