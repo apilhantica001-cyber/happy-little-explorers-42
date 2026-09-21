@@ -68,6 +68,7 @@ function PickActivity({
 
   const handle = (item: Item) => {
     poke();
+    if (hit) return;
     if (item.id === board.target.id) {
       setHit(item.id);
       sounds.yay();
@@ -189,6 +190,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
   }, [board]);
 
   const handle = (idx: number) => {
+    if (hit) return;
     const isBig = board.bigFirst ? idx === 0 : idx === 1;
     if (isBig) {
       setHit(idx);
@@ -315,6 +317,7 @@ function AssociationActivity({ onComplete }: ActivityProps) {
   }, [board]);
 
   const handle = (o: Item) => {
+    if (hit) return;
     if (o.id === board.target.b.id) {
       setHit(o.id);
       sounds.yay();
