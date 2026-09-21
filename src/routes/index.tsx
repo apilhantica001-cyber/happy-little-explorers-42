@@ -175,7 +175,7 @@ function Game() {
             setStarted(true);
           }}
           style={{ background: "var(--gradient-play)" }}
-          className="animate-bob flex h-40 w-40 items-center justify-center rounded-full text-[5rem] text-primary-foreground shadow-soft transition-transform active:scale-95"
+          className="flex h-40 w-40 items-center justify-center rounded-full text-[5rem] text-primary-foreground shadow-soft transition-transform active:scale-95"
           aria-label="Jogar"
         >
           ▶️
