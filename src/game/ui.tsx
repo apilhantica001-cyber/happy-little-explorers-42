@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 
 export function Stage({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-[100dvh] w-full flex-col items-center justify-center gap-6 px-4 py-6">
+    <main className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
       {children}
-    </div>
+    </main>
   );
 }
 
@@ -32,11 +32,13 @@ export function Tile({
   children,
   bg,
   state,
+  hint = false,
 }: {
   onClick: () => void;
   children: ReactNode;
   bg?: string | undefined;
   state?: "idle" | "happy" | "wiggle" | "done" | undefined;
+  hint?: boolean;
 }) {
   return (
     <button
@@ -49,6 +51,7 @@ export function Tile({
         state === "happy" ? "animate-pop" : "",
         state === "wiggle" ? "animate-wiggle" : "",
         state === "done" ? "opacity-60" : "",
+        hint && state !== "happy" ? "animate-bob ring-4 ring-primary/40" : "",
       ].join(" ")}
     >
       <span className="drop-shadow">{children}</span>
