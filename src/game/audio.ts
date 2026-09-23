@@ -266,3 +266,37 @@ export function speak(text: string) {
     /* ignore */
   }
 }
+
+export function speakEn(text: string) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  if (!settings.sound) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    const v = window.speechSynthesis.getVoices().find((x) => x.lang.startsWith("en"));
+    if (v) u.voice = v;
+    u.rate = 0.8;
+    u.pitch = 1.3;
+    u.volume = settings.volume;
+    window.speechSynthesis.speak(u);
+  } catch {
+    /* ignore */
+  }
+}
+
+animalSounds["macaco"] = () => {
+  [0, 0.14, 0.28].forEach((d) => tone({ freq: 700, to: 1100, duration: 0.12, type: "triangle", delay: d, gain: 0.16 }));
+};
+
+export const thingSounds: Record<string, () => void> = {
+  carro: () => { tone({ freq: 440, duration: 0.2, type: "square", gain: 0.12 }); tone({ freq: 440, duration: 0.3, type: "square", delay: 0.28, gain: 0.12 }); },
+  onibus: () => tone({ freq: 220, duration: 0.6, type: "square", gain: 0.12 }),
+  aviao: () => tone({ freq: 200, to: 600, duration: 1, type: "sawtooth", gain: 0.08 }),
+  barco: () => tone({ freq: 130, duration: 0.9, type: "triangle", gain: 0.2 }),
+  trem: () => { tone({ freq: 600, duration: 0.3, type: "triangle" }); tone({ freq: 750, duration: 0.5, type: "triangle", delay: 0.3 }); },
+  bola: () => tone({ freq: 300, to: 150, duration: 0.15, type: "sine", gain: 0.3 }),
+  boneca: () => playMelody([784, 988, 1175], 0.12, "sine"),
+  ursinho: () => tone({ freq: 250, to: 200, duration: 0.4, type: "triangle", vibrato: 5 }),
+  blocos: () => { tone({ freq: 500, duration: 0.07, type: "square", gain: 0.1 }); tone({ freq: 400, duration: 0.07, type: "square", delay: 0.12, gain: 0.1 }); },
+};
