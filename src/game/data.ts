@@ -1,4 +1,4 @@
-export type Item = { id: string; label: string; emoji?: string; bg?: string; say?: string };
+export type Item = { id: string; label: string; emoji?: string; bg?: string; say?: string; en?: string };
 
 export const COLORS: Item[] = [
   { id: "vermelho", label: "vermelho", bg: "oklch(0.63 0.24 27)" },
@@ -7,7 +7,37 @@ export const COLORS: Item[] = [
   { id: "verde", label: "verde", bg: "oklch(0.72 0.19 145)" },
   { id: "roxo", label: "roxo", bg: "oklch(0.58 0.2 300)" },
   { id: "laranja", label: "laranja", bg: "oklch(0.74 0.19 55)" },
+  { id: "rosa", label: "rosa", bg: "oklch(0.78 0.14 350)" },
+  { id: "azulclaro", label: "azul-claro", bg: "oklch(0.84 0.1 225)" },
+  { id: "marrom", label: "marrom", bg: "oklch(0.48 0.09 55)" },
+  { id: "cinza", label: "cinza", bg: "oklch(0.68 0.01 250)" },
+  { id: "preto", label: "preto", bg: "oklch(0.2 0 0)" },
+  { id: "branco", label: "branco", bg: "oklch(0.99 0 0)" },
 ];
+
+/** Gradually unlock more colors as rounds pass. */
+export const colorPool = (round: number) => COLORS.slice(0, Math.min(COLORS.length, 4 + round * 3));
+
+export const COLOR_EN: Record<string, string> = {
+  vermelho: "Red", azul: "Blue", amarelo: "Yellow", verde: "Green", roxo: "Purple", laranja: "Orange",
+  rosa: "Pink", azulclaro: "Light blue", marrom: "Brown", cinza: "Gray", preto: "Black", branco: "White",
+};
+
+/** Objects that are clearly one color (for "find the blue object"). */
+export const COLORED: Record<string, string[]> = {
+  vermelho: ["🍎", "🍓", "🚒"],
+  azul: ["🐳", "🫐", "🧢"],
+  amarelo: ["🍌", "🐤", "🌻"],
+  verde: ["🐸", "🥦", "🍀"],
+  roxo: ["🍇", "🍆", "🔮"],
+  laranja: ["🍊", "🥕", "🎃"],
+  rosa: ["🐷", "🌸", "🦩"],
+  azulclaro: ["🧊", "💧", "🩵"],
+  marrom: ["🐻", "🍫", "🪵"],
+  cinza: ["🐘", "🐭", "🪨"],
+  preto: ["🎩", "🎱", "🐈‍⬛"],
+  branco: ["🥚", "🐑", "🤍"],
+};
 
 export const SHAPES: Item[] = [
   { id: "circulo", label: "círculo", emoji: "🔵" },
@@ -27,6 +57,7 @@ export const ANIMALS: Item[] = [
   { id: "passarinho", label: "passarinho", emoji: "🐦", say: "O passarinho faz piu piu!" },
   { id: "peixe", label: "peixe", emoji: "🐠", say: "O peixinho faz blub blub!" },
   { id: "ovelha", label: "ovelha", emoji: "🐑", say: "A ovelha faz béé!" },
+  { id: "macaco", label: "macaco", emoji: "🐵", say: "O macaco faz uh uh ah ah!" },
 ];
 
 export const FRUITS: Item[] = [
@@ -89,3 +120,43 @@ export const BODY: Item[] = [
 
 export const PRAISE = ["Muito bem!", "Isso mesmo!", "Boa!", "Uau!", "Oba!", "Uhuu!"];
 export const praise = () => PRAISE[Math.floor(Math.random() * PRAISE.length)]!;
+
+export const TRANSPORT: Item[] = [
+  { id: "carro", label: "carro", emoji: "🚗", say: "O carro faz bi bi!", en: "Car" },
+  { id: "onibus", label: "ônibus", emoji: "🚌", say: "O ônibus!", en: "Bus" },
+  { id: "aviao", label: "avião", emoji: "✈️", say: "O avião voa!", en: "Plane" },
+  { id: "barco", label: "barco", emoji: "⛵", say: "O barco!", en: "Boat" },
+  { id: "trem", label: "trem", emoji: "🚂", say: "O trem faz piuí!", en: "Train" },
+];
+
+export const TOYS: Item[] = [
+  { id: "bola", label: "bola", emoji: "⚽", en: "Ball" },
+  { id: "boneca", label: "boneca", emoji: "🪆", en: "Doll" },
+  { id: "carrinho", label: "carrinho", emoji: "🏎️", en: "Car" },
+  { id: "ursinho", label: "ursinho", emoji: "🧸", en: "Teddy" },
+  { id: "blocos", label: "blocos", emoji: "🧱", en: "Blocks" },
+];
+
+export const EN_ANIMALS: Item[] = [
+  { id: "cachorro", label: "Dog", emoji: "🐶", en: "Dog" },
+  { id: "gato", label: "Cat", emoji: "🐱", en: "Cat" },
+  { id: "vaca", label: "Cow", emoji: "🐮", en: "Cow" },
+  { id: "peixe", label: "Fish", emoji: "🐟", en: "Fish" },
+  { id: "passarinho", label: "Bird", emoji: "🐦", en: "Bird" },
+  { id: "pato", label: "Duck", emoji: "🦆", en: "Duck" },
+  { id: "leao", label: "Lion", emoji: "🦁", en: "Lion" },
+];
+
+export const EN_OBJECTS: Item[] = [
+  { id: "bola", label: "Ball", emoji: "⚽", en: "Ball" },
+  { id: "maca", label: "Apple", emoji: "🍎", en: "Apple" },
+  { id: "carro", label: "Car", emoji: "🚗", en: "Car" },
+  { id: "estrela", label: "Star", emoji: "⭐", en: "Star" },
+  { id: "banana", label: "Banana", emoji: "🍌", en: "Banana" },
+  { id: "sol", label: "Sun", emoji: "☀️", en: "Sun" },
+];
+
+export const EN_NUMBERS = ["One", "Two", "Three"];
+
+export const ENCOURAGE = ["Olha!", "Vamos tentar!", "Quase!", "Olha aqui!"];
+export const encourage = () => ENCOURAGE[Math.floor(Math.random() * ENCOURAGE.length)]!;
