@@ -16,6 +16,8 @@ import {
   type Item,
 } from "./data";
 import { useIdleHint } from "./useIdleHint";
+import { useLock } from "./useLock";
+import { encourage, colorPool } from "./data";
 import {
   BasketActivity,
   CurtainActivity,
@@ -45,6 +47,8 @@ function PickActivity({
   const [roundIdx, setRoundIdx] = useState(0);
   const [wrong, setWrong] = useState<string | null>(null);
   const [hit, setHit] = useState<string | null>(null);
+  const [help, setHelp] = useState(false);
+  const lock = useLock();
 
   const board = useMemo(() => {
     const opts = pick(pool, options);
@@ -68,20 +72,28 @@ function PickActivity({
 
   const handle = (item: Item) => {
     poke();
-    if (hit) return;
     if (item.id === board.target.id) {
+      if (!lock.tryLock()) return;
       setHit(item.id);
+      setHelp(false);
       sounds.yay();
       speak(praise());
       window.setTimeout(() => {
-        setHit(null);
         if (roundIdx + 1 >= rounds) onComplete();
-        else setRoundIdx((r) => r + 1);
+        else {
+          setHit(null);
+          setRoundIdx((r) => r + 1);
+          window.setTimeout(lock.release, 250);
+        }
       }, 900);
     } else {
+      if (hit) return;
       setWrong(item.id);
+      setHelp(true);
       sounds.gentle();
+      speak(encourage());
       window.setTimeout(() => setWrong(null), 500);
+      window.setTimeout(() => setHelp(false), 1600);
     }
   };
 
@@ -104,7 +116,7 @@ function PickActivity({
             key={o.id}
             bg={o.bg}
             onClick={() => handle(o)}
-            hint={level > 0 && o.id === board.target.id && !hit}
+            hint={(level > 0 || help) && o.id === board.target.id && !hit}
             state={hit === o.id ? "happy" : wrong === o.id ? "wiggle" : "idle"}
           >
             {o.emoji ?? ""}
@@ -189,22 +201,27 @@ function SizesActivity({ onComplete }: ActivityProps) {
     speak("Toque no grande!");
   }, [board]);
 
+  const lock = useLock();
   const handle = (idx: number) => {
     if (hit) return;
     const isBig = board.bigFirst ? idx === 0 : idx === 1;
     if (isBig) {
+      if (!lock.tryLock()) return;
       setHit(idx);
       sounds.yay();
       speak(praise());
       window.setTimeout(() => {
-        setHit(null);
         if (roundIdx + 1 >= 3) onComplete();
-        else setRoundIdx((r) => r + 1);
+        else {
+          setHit(null);
+          setRoundIdx((r) => r + 1);
+          window.setTimeout(lock.release, 250);
+        }
       }, 900);
     } else {
       setWrong(idx);
       sounds.gentle();
-      speak("Esse é pequeno!");
+      speak("Olha, esse é pequeno!");
       window.setTimeout(() => setWrong(null), 500);
     }
   };
@@ -316,16 +333,21 @@ function AssociationActivity({ onComplete }: ActivityProps) {
     speak(`O que combina com ${board.target.a.label}?`);
   }, [board]);
 
+  const lock = useLock();
   const handle = (o: Item) => {
     if (hit) return;
     if (o.id === board.target.b.id) {
+      if (!lock.tryLock()) return;
       setHit(o.id);
       sounds.yay();
       speak(praise());
       window.setTimeout(() => {
-        setHit(null);
         if (roundIdx + 1 >= 3) onComplete();
-        else setRoundIdx((r) => r + 1);
+        else {
+          setHit(null);
+          setRoundIdx((r) => r + 1);
+          window.setTimeout(lock.release, 250);
+        }
       }, 900);
     } else {
       setWrong(o.id);
@@ -500,7 +522,12 @@ export const ACTIVITIES: Activity[] = [
     id: "cores",
     icon: "🎨",
     render: (p) => (
-      <PickActivity {...p} pool={COLORS} promptText={(t) => `Cadê a cor ${t.label}?`} />
+      <PickActivity
+        {...p}
+        pool={colorPool(p.round)}
+        options={Math.min(4, 2 + p.round)}
+        promptText={(t) => `Cadê a cor ${t.label}?`}
+      />
     ),
   },
   { id: "encaixar", icon: "🧩", render: (p) => <ShapeFitActivity {...p} /> },

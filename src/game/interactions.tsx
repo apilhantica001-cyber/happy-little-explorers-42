@@ -17,7 +17,7 @@ export function playAnimal(item: Item) {
 
 type Pos = { x: number; y: number };
 
-function useBox() {
+export function useBox() {
   const ref = useRef<HTMLDivElement | null>(null);
   const [box, setBox] = useState({ w: 360, h: 520 });
   useEffect(() => {
@@ -32,7 +32,7 @@ function useBox() {
 }
 
 /* ---------------- Drag: fruits into the basket ---------------- */
-function DragTarget({
+export function DragTarget({
   emoji,
   home,
   onDrop,
