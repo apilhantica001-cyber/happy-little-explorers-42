@@ -48,17 +48,26 @@ export const SHAPES: Item[] = [
 ];
 
 export const ANIMALS: Item[] = [
-  { id: "cachorro", label: "cachorro", emoji: "🐶", say: "O cachorro faz au au!" },
-  { id: "gato", label: "gato", emoji: "🐱", say: "O gato faz miau!" },
-  { id: "vaca", label: "vaca", emoji: "🐮", say: "A vaca faz muu!" },
-  { id: "pato", label: "pato", emoji: "🦆", say: "O pato faz quá quá!" },
-  { id: "leao", label: "leão", emoji: "🦁", say: "O leão faz rááá!" },
-  { id: "elefante", label: "elefante", emoji: "🐘", say: "O elefante faz tuuu!" },
-  { id: "passarinho", label: "passarinho", emoji: "🐦", say: "O passarinho faz piu piu!" },
-  { id: "peixe", label: "peixe", emoji: "🐠", say: "O peixinho faz blub blub!" },
-  { id: "ovelha", label: "ovelha", emoji: "🐑", say: "A ovelha faz béé!" },
-  { id: "macaco", label: "macaco", emoji: "🐵", say: "O macaco faz uh uh ah ah!" },
+  { id: "cachorro", label: "cachorro", emoji: "🐶", say: "Olha o cachorrinho!" },
+  { id: "gato", label: "gato", emoji: "🐱", say: "Olha o gatinho!" },
+  { id: "vaca", label: "vaca", emoji: "🐮", say: "Olha a vaquinha!" },
+  { id: "pato", label: "pato", emoji: "🦆", say: "Olha o patinho!" },
+  { id: "sapo", label: "sapo", emoji: "🐸", say: "Olha o sapinho!" },
+  { id: "leao", label: "leão", emoji: "🦁", say: "Olha o leão!" },
+  { id: "elefante", label: "elefante", emoji: "🐘", say: "Olha o elefante!" },
+  { id: "passarinho", label: "passarinho", emoji: "🐦", say: "Olha o passarinho!" },
+  { id: "peixe", label: "peixe", emoji: "🐠", say: "Olha o peixinho!" },
+  { id: "ovelha", label: "ovelha", emoji: "🐑", say: "Olha a ovelhinha!" },
+  { id: "macaco", label: "macaco", emoji: "🐵", say: "Olha o macaquinho!" },
 ];
+
+const FEM = new Set([
+  "vaca", "ovelha", "bola", "boneca", "banana", "maçã", "uva", "melancia", "laranja", "estrela", "chave",
+  "porta", "meia", "xícara", "abelha", "flor", "água", "colher", "lua", "árvore", "nuvem", "chuva", "boca",
+  "mão", "orelha",
+]);
+/** "Cadê o gato?" / "Cadê a bola?" */
+export const cade = (label: string) => `Cadê ${FEM.has(label) ? "a" : "o"} ${label}?`;
 
 export const FRUITS: Item[] = [
   { id: "banana", label: "banana", emoji: "🍌" },

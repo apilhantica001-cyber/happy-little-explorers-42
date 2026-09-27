@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Prompt, Tile, TileGrid } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { sounds, speak, playTone } from "./audio";
+import { sounds, speak, playTone, type SpeechPart } from "./audio";
 import {
   ANIMALS,
   BODY,
   COLORS,
+  COLOR_EN,
   FRUITS,
   INSTRUMENTS,
   NATURE,
@@ -17,7 +18,7 @@ import {
 } from "./data";
 import { useIdleHint } from "./useIdleHint";
 import { useLock } from "./useLock";
-import { encourage, colorPool } from "./data";
+import { encourage, colorPool, cade } from "./data";
 import {
   BasketActivity,
   CurtainActivity,
@@ -38,11 +39,13 @@ function PickActivity({
   rounds = 3,
   options = 3,
   promptText,
+  sayHit,
 }: ActivityProps & {
   pool: Item[];
   rounds?: number;
   options?: number;
   promptText: (t: Item) => string;
+  sayHit?: (t: Item) => SpeechPart[];
 }) {
   const [roundIdx, setRoundIdx] = useState(0);
   const [wrong, setWrong] = useState<string | null>(null);
@@ -77,7 +80,7 @@ function PickActivity({
       setHit(item.id);
       setHelp(false);
       sounds.yay();
-      speak(praise());
+      speak(...(sayHit ? sayHit(item) : []), praise());
       window.setTimeout(() => {
         if (roundIdx + 1 >= rounds) onComplete();
         else {
@@ -281,7 +284,7 @@ function CountActivity({ onComplete }: ActivityProps) {
     if (next.length === board.total) {
       window.setTimeout(() => {
         sounds.cheer();
-        speak(`${board.total}! ${praise()}`);
+        speak(String(board.total), praise());
         window.setTimeout(() => {
           if (roundIdx + 1 >= 3) onComplete();
           else setRoundIdx((r) => r + 1);
@@ -526,7 +529,8 @@ export const ACTIVITIES: Activity[] = [
         {...p}
         pool={colorPool(p.round)}
         options={Math.min(4, 2 + p.round)}
-        promptText={(t) => `Cadê a cor ${t.label}?`}
+        promptText={(t) => cade(t.label)}
+        sayHit={(t) => (p.round > 0 && Math.random() < 0.5 ? [t.label, { en: COLOR_EN[t.id] ?? "" }] : [t.label])}
       />
     ),
   },
@@ -559,12 +563,12 @@ export const ACTIVITIES: Activity[] = [
   {
     id: "formas",
     icon: "🔷",
-    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => `Cadê o ${t.label}?`} />,
+    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => cade(t.label)} />,
   },
   {
     id: "frutas",
     icon: "🍓",
-    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => `Cadê a ${t.label}?`} />,
+    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => cade(t.label)} />,
   },
   { id: "numeros", icon: "🔢", render: (p) => <CountActivity {...p} /> },
   { id: "associacao", icon: "🔗", render: (p) => <AssociationActivity {...p} /> },
