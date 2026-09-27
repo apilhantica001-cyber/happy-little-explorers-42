@@ -44,7 +44,7 @@ export function BalloonActivity({ onComplete, round }: ActivityProps) {
   const [popped, setPopped] = useState<number[]>([]);
   const { level, poke } = useIdleHint(popped.length);
 
-  useEffect(() => speak("Estoure os balões!"), []);
+  useEffect(() => {{ void speak("Estoure os balões!"); }}, []);
 
   const handle = (b: (typeof balloons)[number]) => {
     poke();
@@ -113,7 +113,7 @@ export function BubbleSwipeActivity({ onComplete }: ActivityProps) {
   const poppedRef = useRef<number[]>([]);
   const doneRef = useRef(false);
 
-  useEffect(() => speak("Passe o dedinho nas bolhas!"), []);
+  useEffect(() => {{ void speak("Passe o dedinho nas bolhas!"); }}, []);
 
   const check = (e: ReactPointerEvent) => {
     if (e.buttons === 0 && e.pointerType === "mouse" && e.type === "pointermove") return;
@@ -258,7 +258,7 @@ export function DragHomeActivity({
   const { level, poke } = useIdleHint(placed.length);
   const target = { x: box.w / 2, y: 100 };
 
-  useEffect(() => speak(say), [say]);
+  useEffect(() => {{ void speak(say); }}, [say]);
 
   return (
     <>

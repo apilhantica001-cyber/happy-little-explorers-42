@@ -6,9 +6,9 @@ import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
 import {
   loadSettings,
-  setMusic,
-  setSound,
-  setVolume,
+  setChannel,
+  setMusicOn,
+  setMuted,
   settings,
   sounds,
   speak,
@@ -98,11 +98,11 @@ function Game() {
         size="icon"
         variant="secondary"
         className="h-12 w-12 rounded-full bg-card/80 shadow-soft"
-        onClick={() => setSound(!audioSettings.sound)}
-        aria-label={audioSettings.sound ? "Desligar som" : "Ligar som"}
-        title={audioSettings.sound ? "Desligar som" : "Ligar som"}
+        onClick={() => setMuted(!audioSettings.muted)}
+        aria-label={!audioSettings.muted ? "Silenciar tudo" : "Ligar som"}
+        title={!audioSettings.muted ? "Silenciar tudo" : "Ligar som"}
       >
-        {audioSettings.sound ? <Volume2 className="size-6" /> : <VolumeX className="size-6" />}
+        {!audioSettings.muted ? <Volume2 className="size-6" /> : <VolumeX className="size-6" />}
       </Button>
       <Dialog>
         <DialogTrigger asChild>
@@ -124,34 +124,31 @@ function Game() {
           </DialogHeader>
           <div className="grid gap-6 py-2">
             <label className="flex min-h-12 items-center justify-between gap-4 text-lg font-bold">
-              <span className="flex items-center gap-3"><Volume2 /> Som</span>
-              <Switch checked={audioSettings.sound} onCheckedChange={setSound} aria-label="Som" />
+              <span className="flex items-center gap-3"><VolumeX /> Silenciar tudo</span>
+              <Switch checked={audioSettings.muted} onCheckedChange={setMuted} aria-label="Silenciar tudo" />
             </label>
             <label className="flex min-h-12 items-center justify-between gap-4 text-lg font-bold">
               <span className="flex items-center gap-3"><Music /> Música</span>
-              <Switch
-                checked={audioSettings.music}
-                onCheckedChange={setMusic}
-                disabled={!audioSettings.sound}
-                aria-label="Música"
-              />
+              <Switch checked={audioSettings.musicOn} onCheckedChange={setMusicOn} aria-label="Música" />
             </label>
-            <div className="grid gap-3">
-              <div className="flex items-center justify-between text-lg font-bold">
-                <span>Volume</span>
-                <span>{Math.round(audioSettings.volume * 100)}%</span>
+            {([["voice", "🗣️ Voz"], ["fx", "🔊 Efeitos"], ["music", "🎵 Música"]] as const).map(([ch, label]) => (
+              <div key={ch} className="grid gap-2">
+                <div className="flex items-center justify-between text-lg font-bold">
+                  <span>{label}</span>
+                  <span>{Math.round(audioSettings[ch] * 100)}%</span>
+                </div>
+                <Slider
+                  value={[audioSettings[ch] * 100]}
+                  min={0}
+                  max={100}
+                  step={5}
+                  disabled={audioSettings.muted}
+                  onValueChange={(v) => setChannel(ch, (v[0] ?? 0) / 100)}
+                  className="h-8"
+                  aria-label={label}
+                />
               </div>
-              <Slider
-                value={[audioSettings.volume * 100]}
-                min={0}
-                max={100}
-                step={5}
-                disabled={!audioSettings.sound}
-                onValueChange={(value) => setVolume((value[0] ?? 0) / 100)}
-                className="h-10"
-                aria-label="Volume"
-              />
-            </div>
+            ))}
             <Button type="button" variant="secondary" className="h-12 text-base" onClick={restart}>
               <RotateCcw className="size-5" /> Reiniciar brincadeiras
             </Button>

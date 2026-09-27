@@ -2,17 +2,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { Prompt } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { animalSounds, sounds, speak } from "./audio";
+import { animalSounds, playAnimalSound, settings, sounds, speak } from "./audio";
 import { ANIMALS, FRUITS, NATURE, OBJECTS, SHAPES, praise, type Item } from "./data";
 import { useIdleHint } from "./useIdleHint";
 
 export type ActivityProps = { onComplete: () => void; round: number };
 
 export function playAnimal(item: Item) {
-  const fn = animalSounds[item.id];
-  if (fn) fn();
-  else sounds.pop();
-  window.setTimeout(() => speak(item.say ?? item.label), 700);
+  // narrator first ("Olha o gatinho!"), then the animal's own sound
+  void speak(item.say ?? item.label).then((ok) => {
+    if (ok || settings.voice <= 0) void playAnimalSound(item.id);
+  });
 }
 
 type Pos = { x: number; y: number };
@@ -410,7 +410,7 @@ export function CurtainActivity({ onComplete }: ActivityProps) {
     if (pct > 70) {
       setDone(true);
       setReveal(100);
-      if (animalSounds[hidden.id]) playAnimal(hidden);
+      if (hidden.say) playAnimal(hidden);
       else {
         sounds.sparkle();
         speak(hidden.label);
