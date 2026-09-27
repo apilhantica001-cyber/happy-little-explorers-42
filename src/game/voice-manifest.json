@@ -1,0 +1,13 @@
+{
+ "pt": {},
+ "en": {},
+ "animals": {
+  "bird": "/audio/animals/bird.mp3",
+  "cat": "/audio/animals/cat.mp3",
+  "cow": "/audio/animals/cow.mp3",
+  "dog": "/audio/animals/dog.mp3",
+  "duck": "/audio/animals/duck.mp3",
+  "frog": "/audio/animals/frog.mp3",
+  "sheep": "/audio/animals/sheep.mp3"
+ }
+}
