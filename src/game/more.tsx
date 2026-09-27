@@ -12,6 +12,7 @@ import {
   NATURE,
   TOYS,
   colorPool,
+  cade,
   encourage,
   praise,
   type Item,
@@ -50,7 +51,7 @@ export function BalloonActivity({ onComplete, round }: ActivityProps) {
     if (popped.includes(b.key)) return;
     sounds.pop();
     tone({ freq: 900, to: 200, duration: 0.12, type: "square", gain: 0.08 });
-    speak(`Pop! ${b.label}!`);
+    speak(b.label);
     const next = [...popped, b.key];
     setPopped(next);
     if (next.length === balloons.length) finish(onComplete);
@@ -419,7 +420,7 @@ export function FindActivity({ onComplete, round }: ActivityProps) {
     setPeek([]);
     setFound(false);
     lock.release();
-    speak(`Cadê o ${board.target.label}?`);
+    speak(cade(board.target.label));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board]);
 
@@ -431,7 +432,7 @@ export function FindActivity({ onComplete, round }: ActivityProps) {
       const fn = animalSounds[board.target.id] ?? thingSounds[board.target.id];
       if (fn) fn();
       else sounds.sparkle();
-      speak(`Achou! ${praise()}`);
+      speak("Achou!", praise());
       window.setTimeout(() => {
         if (roundIdx + 1 >= 2) finish(onComplete, 0);
         else setRoundIdx((r) => r + 1);
@@ -482,7 +483,7 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
   }, [roundIdx]);
   const { level, poke } = useIdleHint(roundIdx);
   const ask = () =>
-    speak(Math.random() > 0.5 ? `Encontre o ${board.target.color.label}!` : `Qual é o ${board.target.color.label}?`);
+    speak(cade(board.target.color.label));
 
   useEffect(() => {
     ask();
@@ -495,7 +496,7 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
       if (!lock.tryLock()) return;
       setHit(o.color.id);
       sounds.yay();
-      speak(`${board.target.color.label}! ${praise()}`);
+      speak(board.target.color.label, ...(Math.random() < 0.4 ? [{ en: COLOR_EN[board.target.color.id] ?? "" }] : []), praise());
       window.setTimeout(() => {
         if (roundIdx + 1 >= 3) onComplete();
         else {
@@ -510,7 +511,7 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
       setWrong(o.color.id);
       setHelp(true);
       sounds.gentle();
-      speak(`${o.color.label}! ${encourage()}`);
+      speak(o.color.label, encourage());
       window.setTimeout(() => setWrong(null), 500);
       window.setTimeout(() => setHelp(false), 1600);
     }

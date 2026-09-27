@@ -281,7 +281,7 @@ function CountActivity({ onComplete }: ActivityProps) {
     if (next.length === board.total) {
       window.setTimeout(() => {
         sounds.cheer();
-        speak(`${board.total}! ${praise()}`);
+        speak(String(board.total), praise());
         window.setTimeout(() => {
           if (roundIdx + 1 >= 3) onComplete();
           else setRoundIdx((r) => r + 1);
@@ -526,7 +526,7 @@ export const ACTIVITIES: Activity[] = [
         {...p}
         pool={colorPool(p.round)}
         options={Math.min(4, 2 + p.round)}
-        promptText={(t) => `Cadê a cor ${t.label}?`}
+        promptText={(t) => cade(t.label)}
       />
     ),
   },
@@ -559,12 +559,12 @@ export const ACTIVITIES: Activity[] = [
   {
     id: "formas",
     icon: "🔷",
-    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => `Cadê o ${t.label}?`} />,
+    render: (p) => <PickActivity {...p} pool={SHAPES} promptText={(t) => cade(t.label)} />,
   },
   {
     id: "frutas",
     icon: "🍓",
-    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => `Cadê a ${t.label}?`} />,
+    render: (p) => <PickActivity {...p} pool={FRUITS} promptText={(t) => cade(t.label)} />,
   },
   { id: "numeros", icon: "🔢", render: (p) => <CountActivity {...p} /> },
   { id: "associacao", icon: "🔗", render: (p) => <AssociationActivity {...p} /> },
