@@ -540,6 +540,11 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
 }
 
 /* ---------------- English: see, hear, touch ---------------- */
+const PT_OF: Record<string, string> = {
+  cachorro: "Cachorrinho!", gato: "Gatinho!", vaca: "Vaquinha!", pato: "Patinho!", peixe: "Peixinho!",
+  passarinho: "Passarinho!", leao: "Leão!", bola: "Bola!", maca: "Maçã!", estrela: "Estrela!", sol: "Sol!",
+  vermelho: "Vermelho!", azul: "Azul!", amarelo: "Amarelo!", verde: "Verde!",
+};
 export function EnglishWordsActivity({ onComplete, pool }: ActivityProps & { pool: Item[] }) {
   const items = useMemo(() => pick(pool, 3), [pool]);
   const [idx, setIdx] = useState(0);
@@ -568,7 +573,11 @@ export function EnglishWordsActivity({ onComplete, pool }: ActivityProps & { poo
     const fn = animalSounds[item.id] ?? thingSounds[item.id];
     if (fn) fn();
     else sounds.sparkle();
-    window.setTimeout(() => speakEn(`${item.en ?? item.label}!`), 650);
+    window.setTimeout(() => {
+      const pt = PT_OF[item.id];
+      if (pt && Math.random() < 0.35) speak({ en: `${item.en ?? item.label}!` }, pt);
+      else speakEn(`${item.en ?? item.label}!`);
+    }, 650);
     window.setTimeout(() => {
       if (idx + 1 >= items.length) finish(onComplete, 0);
       else setIdx((i) => i + 1);

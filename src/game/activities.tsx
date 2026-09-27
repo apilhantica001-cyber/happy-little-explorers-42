@@ -17,7 +17,7 @@ import {
 } from "./data";
 import { useIdleHint } from "./useIdleHint";
 import { useLock } from "./useLock";
-import { encourage, colorPool } from "./data";
+import { encourage, colorPool, cade } from "./data";
 import {
   BasketActivity,
   CurtainActivity,
