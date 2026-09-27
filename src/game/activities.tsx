@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Prompt, Tile, TileGrid } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { sounds, speak, playTone } from "./audio";
+import { sounds, speak, playTone, type SpeechPart } from "./audio";
 import {
   ANIMALS,
   BODY,
   COLORS,
+  COLOR_EN,
   FRUITS,
   INSTRUMENTS,
   NATURE,
@@ -38,11 +39,13 @@ function PickActivity({
   rounds = 3,
   options = 3,
   promptText,
+  sayHit,
 }: ActivityProps & {
   pool: Item[];
   rounds?: number;
   options?: number;
   promptText: (t: Item) => string;
+  sayHit?: (t: Item) => SpeechPart[];
 }) {
   const [roundIdx, setRoundIdx] = useState(0);
   const [wrong, setWrong] = useState<string | null>(null);
@@ -77,7 +80,7 @@ function PickActivity({
       setHit(item.id);
       setHelp(false);
       sounds.yay();
-      speak(praise());
+      speak(...(sayHit ? sayHit(item) : []), praise());
       window.setTimeout(() => {
         if (roundIdx + 1 >= rounds) onComplete();
         else {
@@ -527,6 +530,7 @@ export const ACTIVITIES: Activity[] = [
         pool={colorPool(p.round)}
         options={Math.min(4, 2 + p.round)}
         promptText={(t) => cade(t.label)}
+        sayHit={(t) => (p.round > 0 && Math.random() < 0.5 ? [t.label, { en: COLOR_EN[t.id] ?? "" }] : [t.label])}
       />
     ),
   },
