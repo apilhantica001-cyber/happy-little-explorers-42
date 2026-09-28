@@ -28,6 +28,18 @@ import {
   playAnimal,
   type ActivityProps,
 } from "./interactions";
+import { EN_ANIMALS, EN_OBJECTS, TOYS } from "./data";
+import {
+  BalloonActivity,
+  BubbleSwipeActivity,
+  ColorObjectActivity,
+  DragHomeActivity,
+  EnglishNumbersActivity,
+  EnglishWordsActivity,
+  FindActivity,
+  FootprintsActivity,
+  GuideActivity,
+} from "./more";
 
 export type { ActivityProps };
 
@@ -583,4 +595,27 @@ export const ACTIVITIES: Activity[] = [
     icon: "🧸",
     render: (p) => <ExploreActivity {...p} pool={OBJECTS} />,
   },
+  { id: "baloes", icon: "🎈", render: (p) => <BalloonActivity {...p} /> },
+  { id: "bolhas", icon: "🫧", render: (p) => <BubbleSwipeActivity {...p} /> },
+  {
+    id: "abelha",
+    icon: "🐝",
+    render: (p) => (
+      <GuideActivity {...p} mover="🐝" goals={["🌸", "🌻", "🌷"]} say="Leve a abelhinha até a flor!" />
+    ),
+  },
+  {
+    id: "brinquedos",
+    icon: "📦",
+    render: (p) => <DragHomeActivity {...p} pool={TOYS} home="📦" say="Guarde os brinquedos na caixa!" />,
+  },
+  { id: "pegadas", icon: "🐾", render: (p) => <FootprintsActivity {...p} /> },
+  { id: "encontre", icon: "🔎", render: (p) => <FindActivity {...p} /> },
+  { id: "cor-objeto", icon: "🍎", render: (p) => <ColorObjectActivity {...p} /> },
+  { id: "english-animals", icon: "🇬🇧", render: (p) => <EnglishWordsActivity {...p} pool={EN_ANIMALS} /> },
+  { id: "english-objects", icon: "🔤", render: (p) => <EnglishWordsActivity {...p} pool={EN_OBJECTS} /> },
+  { id: "english-numbers", icon: "1️⃣", render: (p) => <EnglishNumbersActivity {...p} /> },
 ];
+
+/** Easy activities used to open each round. */
+export const EASY_IDS = ["cores", "animais", "baloes", "surpresa", "objetos", "bolhas"];
