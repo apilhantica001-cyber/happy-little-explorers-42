@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX } from "lucide-react";
-import { ACTIVITIES } from "@/game/activities";
+import { ACTIVITIES, EASY_IDS } from "@/game/activities";
 import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
 import {
@@ -48,9 +48,19 @@ export const Route = createFileRoute("/")({
   component: Game,
 });
 
+const ROUND_LEN = 10;
+
+function buildOrder(prev: number[] = []): number[] {
+  const last = new Set(prev.slice(-3));
+  const easy = shuffle(ACTIVITIES.map((a, i) => (EASY_IDS.includes(a.id) ? i : -1)).filter((i) => i >= 0 && !last.has(i)));
+  const first = easy[0] ?? 0;
+  const rest = shuffle(ACTIVITIES.map((_, i) => i).filter((i) => i !== first && !last.has(i)));
+  return [first, ...rest].slice(0, ROUND_LEN);
+}
+
 function Game() {
   const [started, setStarted] = useState(false);
-  const [order, setOrder] = useState(() => ACTIVITIES.map((_, i) => i));
+  const [order, setOrder] = useState(() => buildOrder());
   const [step, setStep] = useState(0);
   const [round, setRound] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
@@ -64,7 +74,10 @@ function Game() {
 
   const activity = ACTIVITIES[order[step % order.length]!]!;
 
+  const completing = useRef(false);
   const handleComplete = useCallback(() => {
+    if (completing.current) return;
+    completing.current = true;
     setCelebrating(true);
     sounds.cheer();
     speak("Muito bem!");
@@ -72,13 +85,16 @@ function Game() {
       setCelebrating(false);
       setStep((s) => {
         const next = s + 1;
-        if (next >= ACTIVITIES.length) {
-          setOrder((o) => shuffle(o));
+        if (next >= ROUND_LEN) {
+          setOrder((o) => buildOrder(o));
           setRound((r) => r + 1);
           return 0;
         }
         return next;
       });
+      window.setTimeout(() => {
+        completing.current = false;
+      }, 400);
     }, 1600);
   }, []);
 
@@ -86,7 +102,8 @@ function Game() {
 
   const restart = useCallback(() => {
     setCelebrating(false);
-    setOrder(ACTIVITIES.map((_, i) => i));
+    completing.current = false;
+    setOrder(buildOrder());
     setStep(0);
     setRound((r) => r + 1);
   }, []);
@@ -186,9 +203,9 @@ function Game() {
     <Stage>
       {audioControls}
       <div className="flex w-full max-w-md items-center justify-center gap-2">
-        {ACTIVITIES.map((a, i) => (
+        {order.map((a, i) => (
           <span
-            key={a.id}
+            key={i}
             className={`h-3 rounded-full transition-all ${
               i <= step ? "w-6 bg-card" : "w-3 bg-card/40"
             }`}
@@ -198,6 +215,7 @@ function Game() {
       <div key={key} className="flex w-full flex-col items-center gap-6">
         {activity.render({ onComplete: handleComplete, round })}
       </div>
+      {celebrating && <div className="fixed inset-0 z-30" aria-hidden />}
       <Celebration show={celebrating} />
     </Stage>
   );
