@@ -35,7 +35,8 @@ def synth(text, style, out):
         "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}}},
     }
     req = urllib.request.Request(URL, json.dumps(body).encode(), {"Authorization": "Bearer " + os.environ["LOVABLE_API_KEY"], "Content-Type": "application/json"})
-    for _ in range(3):
+    import time
+    for i in range(6):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
                 wav = r.read()
@@ -47,7 +48,7 @@ def synth(text, style, out):
                                 "-ar", "24000", "-ac", "1", "-b:a", "48k", out], check=True)
             return True
         except Exception as e:  # noqa
-            print("retry", text, e, flush=True)
+            print("retry", text, e, flush=True); time.sleep(5 * (i + 1))
     return False
 
 
@@ -67,7 +68,7 @@ def main():
                 files.append(f"/audio/{lang}/{name}.mp3")
                 jobs.append((t, EN_STYLE if lang == "en" else PT_STYLES[v % 2], f"public/audio/{lang}/{name}.mp3"))
             manifest[lang][k] = files
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(1) as ex:
         ok = list(ex.map(lambda j: synth(*j), jobs))
     print("done", sum(ok), "/", len(ok), flush=True)
     m = json.load(open("src/game/voice-manifest.json"))

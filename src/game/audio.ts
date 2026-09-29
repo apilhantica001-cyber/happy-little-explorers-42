@@ -8,8 +8,16 @@ import manifest from "./voice-manifest.json";
  * - A compressor on the output keeps everything at a gentle level.
  * ===================================================================== */
 
-type Manifest = { pt: Record<string, string>; en: Record<string, string>; animals: Record<string, string> };
-const M = manifest as Manifest;
+type Manifest = { pt: Record<string, string[]>; en: Record<string, string[]>; animals: Record<string, string> };
+const M = manifest as unknown as Manifest;
+const lastTake: Record<string, string> = {};
+function pickTake(list: string[] | undefined, k: string): string | undefined {
+  if (!list || list.length === 0) return undefined;
+  const opts = list.length > 1 ? list.filter((u) => u !== lastTake[k]) : list;
+  const u = opts[Math.floor(Math.random() * opts.length)];
+  if (u) lastTake[k] = u;
+  return u;
+}
 
 export type AudioSettings = { muted: boolean; voice: number; fx: number; music: number; musicOn: boolean };
 
@@ -147,7 +155,7 @@ let preloaded = false;
 function preload() {
   if (preloaded) return;
   preloaded = true;
-  const urls = [...Object.values(M.animals), ...Object.values(M.pt).slice(0, 40)];
+  const urls = [...Object.values(M.animals), ...Object.values(M.pt).flat().slice(0, 40)];
   let i = 0;
   const next = () => {
     const u = urls[i++];
@@ -230,7 +238,8 @@ async function sayPart(part: SpeechPart, token: number) {
   const en = typeof part !== "string";
   const text = en ? part.en : part;
   if (!text) return;
-  const url = (en ? M.en : M.pt)[voiceKey(text)];
+  const k = voiceKey(text);
+  const url = pickTake((en ? M.en : M.pt)[k], (en ? "en:" : "pt:") + k);
   if (!url) return fallbackSpeak(text, en, token);
   const buf = await load(url);
   if (token !== voiceToken) return;

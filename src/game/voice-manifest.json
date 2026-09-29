@@ -1,6 +1,709 @@
 {
- "pt": {},
- "en": {},
+ "pt": {
+  "toque-no-grande": [
+   "/audio/pt/toque-no-grande.mp3"
+  ],
+  "olha-esse-e-pequeno": [
+   "/audio/pt/olha-esse-e-pequeno.mp3"
+  ],
+  "vamos-contar": [
+   "/audio/pt/vamos-contar.mp3"
+  ],
+  "ache-os-iguais": [
+   "/audio/pt/ache-os-iguais.mp3"
+  ],
+  "estoure-as-bolhas": [
+   "/audio/pt/estoure-as-bolhas.mp3"
+  ],
+  "leve-a-abelhinha-ate-a-flor": [
+   "/audio/pt/leve-a-abelhinha-ate-a-flor.mp3"
+  ],
+  "guarde-os-brinquedos-na-caixa": [
+   "/audio/pt/guarde-os-brinquedos-na-caixa.mp3"
+  ],
+  "coloque-as-frutinhas-na-cestinha": [
+   "/audio/pt/coloque-as-frutinhas-na-cestinha.mp3"
+  ],
+  "encaixe-as-formas": [
+   "/audio/pt/encaixe-as-formas.mp3"
+  ],
+  "deslize-o-dedinho-ate-a-estrela-chegar-la": [
+   "/audio/pt/deslize-o-dedinho-ate-a-estrela-chegar-la.mp3"
+  ],
+  "o-que-tem-dentro-toque-para-descobrir": [
+   "/audio/pt/o-que-tem-dentro-toque-para-descobrir.mp3"
+  ],
+  "deslize-a-cortina-para-ver-quem-esta-escondido": [
+   "/audio/pt/deslize-a-cortina-para-ver-quem-esta-escondido.mp3"
+  ],
+  "estoure-os-baloes": [
+   "/audio/pt/estoure-os-baloes.mp3"
+  ],
+  "passe-o-dedinho-nas-bolhas": [
+   "/audio/pt/passe-o-dedinho-nas-bolhas.mp3"
+  ],
+  "siga-as-pegadinhas": [
+   "/audio/pt/siga-as-pegadinhas.mp3"
+  ],
+  "achou": [
+   "/audio/pt/achou.mp3",
+   "/audio/pt/achou-2.mp3"
+  ],
+  "muito-bem": [
+   "/audio/pt/muito-bem.mp3",
+   "/audio/pt/muito-bem-2.mp3"
+  ],
+  "vamos-brincar": [
+   "/audio/pt/vamos-brincar.mp3"
+  ],
+  "vermelho": [
+   "/audio/pt/vermelho.mp3"
+  ],
+  "azul": [
+   "/audio/pt/azul.mp3"
+  ],
+  "amarelo": [
+   "/audio/pt/amarelo.mp3"
+  ],
+  "verde": [
+   "/audio/pt/verde.mp3"
+  ],
+  "roxo": [
+   "/audio/pt/roxo.mp3"
+  ],
+  "laranja": [
+   "/audio/pt/laranja.mp3"
+  ],
+  "azul-claro": [
+   "/audio/pt/azul-claro.mp3"
+  ],
+  "marrom": [
+   "/audio/pt/marrom.mp3"
+  ],
+  "cinza": [
+   "/audio/pt/cinza.mp3"
+  ],
+  "preto": [
+   "/audio/pt/preto.mp3"
+  ],
+  "branco": [
+   "/audio/pt/branco.mp3"
+  ],
+  "circulo": [
+   "/audio/pt/circulo.mp3"
+  ],
+  "quadrado": [
+   "/audio/pt/quadrado.mp3"
+  ],
+  "triangulo": [
+   "/audio/pt/triangulo.mp3"
+  ],
+  "estrela": [
+   "/audio/pt/estrela.mp3"
+  ],
+  "coracao": [
+   "/audio/pt/coracao.mp3"
+  ],
+  "cachorro": [
+   "/audio/pt/cachorro.mp3"
+  ],
+  "olha-o-cachorrinho": [
+   "/audio/pt/olha-o-cachorrinho.mp3"
+  ],
+  "gato": [
+   "/audio/pt/gato.mp3"
+  ],
+  "olha-o-gatinho": [
+   "/audio/pt/olha-o-gatinho.mp3"
+  ],
+  "vaca": [
+   "/audio/pt/vaca.mp3"
+  ],
+  "olha-a-vaquinha": [
+   "/audio/pt/olha-a-vaquinha.mp3"
+  ],
+  "pato": [
+   "/audio/pt/pato.mp3"
+  ],
+  "olha-o-patinho": [
+   "/audio/pt/olha-o-patinho.mp3"
+  ],
+  "sapo": [
+   "/audio/pt/sapo.mp3"
+  ],
+  "olha-o-sapinho": [
+   "/audio/pt/olha-o-sapinho.mp3"
+  ],
+  "leao": [
+   "/audio/pt/leao.mp3"
+  ],
+  "olha-o-leao": [
+   "/audio/pt/olha-o-leao.mp3"
+  ],
+  "elefante": [
+   "/audio/pt/elefante.mp3"
+  ],
+  "olha-o-elefante": [
+   "/audio/pt/olha-o-elefante.mp3"
+  ],
+  "passarinho": [
+   "/audio/pt/passarinho.mp3"
+  ],
+  "olha-o-passarinho": [
+   "/audio/pt/olha-o-passarinho.mp3"
+  ],
+  "peixe": [
+   "/audio/pt/peixe.mp3"
+  ],
+  "olha-o-peixinho": [
+   "/audio/pt/olha-o-peixinho.mp3"
+  ],
+  "ovelha": [
+   "/audio/pt/ovelha.mp3"
+  ],
+  "olha-a-ovelhinha": [
+   "/audio/pt/olha-a-ovelhinha.mp3"
+  ],
+  "macaco": [
+   "/audio/pt/macaco.mp3"
+  ],
+  "olha-o-macaquinho": [
+   "/audio/pt/olha-o-macaquinho.mp3"
+  ],
+  "banana": [
+   "/audio/pt/banana.mp3"
+  ],
+  "maca": [
+   "/audio/pt/maca.mp3"
+  ],
+  "uva": [
+   "/audio/pt/uva.mp3"
+  ],
+  "melancia": [
+   "/audio/pt/melancia.mp3"
+  ],
+  "morango": [
+   "/audio/pt/morango.mp3"
+  ],
+  "lua": [
+   "/audio/pt/lua.mp3"
+  ],
+  "arvore": [
+   "/audio/pt/arvore.mp3"
+  ],
+  "nuvem": [
+   "/audio/pt/nuvem.mp3"
+  ],
+  "arco-iris": [
+   "/audio/pt/arco-iris.mp3"
+  ],
+  "chuva": [
+   "/audio/pt/chuva.mp3"
+  ],
+  "bola": [
+   "/audio/pt/bola.mp3"
+  ],
+  "carrinho": [
+   "/audio/pt/carrinho.mp3"
+  ],
+  "ursinho": [
+   "/audio/pt/ursinho.mp3"
+  ],
+  "balao": [
+   "/audio/pt/balao.mp3"
+  ],
+  "trenzinho": [
+   "/audio/pt/trenzinho.mp3"
+  ],
+  "copo": [
+   "/audio/pt/copo.mp3"
+  ],
+  "colher": [
+   "/audio/pt/colher.mp3"
+  ],
+  "olhos": [
+   "/audio/pt/olhos.mp3"
+  ],
+  "os-olhinhos": [
+   "/audio/pt/os-olhinhos.mp3"
+  ],
+  "nariz": [
+   "/audio/pt/nariz.mp3"
+  ],
+  "o-narizinho": [
+   "/audio/pt/o-narizinho.mp3"
+  ],
+  "boca": [
+   "/audio/pt/boca.mp3"
+  ],
+  "a-boquinha": [
+   "/audio/pt/a-boquinha.mp3"
+  ],
+  "mao": [
+   "/audio/pt/mao.mp3"
+  ],
+  "a-maozinha": [
+   "/audio/pt/a-maozinha.mp3"
+  ],
+  "pe": [
+   "/audio/pt/pe.mp3"
+  ],
+  "o-pezinho": [
+   "/audio/pt/o-pezinho.mp3"
+  ],
+  "orelha": [
+   "/audio/pt/orelha.mp3"
+  ],
+  "a-orelhinha": [
+   "/audio/pt/a-orelhinha.mp3"
+  ],
+  "carro": [
+   "/audio/pt/carro.mp3"
+  ],
+  "o-carro-faz-bi-bi": [
+   "/audio/pt/o-carro-faz-bi-bi.mp3"
+  ],
+  "onibus": [
+   "/audio/pt/onibus.mp3"
+  ],
+  "o-onibus": [
+   "/audio/pt/o-onibus.mp3"
+  ],
+  "aviao": [
+   "/audio/pt/aviao.mp3"
+  ],
+  "o-aviao-voa": [
+   "/audio/pt/o-aviao-voa.mp3"
+  ],
+  "barco": [
+   "/audio/pt/barco.mp3"
+  ],
+  "o-barco": [
+   "/audio/pt/o-barco.mp3"
+  ],
+  "trem": [
+   "/audio/pt/trem.mp3"
+  ],
+  "o-trem-faz-piui": [
+   "/audio/pt/o-trem-faz-piui.mp3"
+  ],
+  "blocos": [
+   "/audio/pt/blocos.mp3"
+  ],
+  "tambor": [
+   "/audio/pt/tambor.mp3"
+  ],
+  "piano": [
+   "/audio/pt/piano.mp3"
+  ],
+  "violao": [
+   "/audio/pt/violao.mp3"
+  ],
+  "trompete": [
+   "/audio/pt/trompete.mp3"
+  ],
+  "chocalho": [
+   "/audio/pt/chocalho.mp3"
+  ],
+  "chave": [
+   "/audio/pt/chave.mp3"
+  ],
+  "porta": [
+   "/audio/pt/porta.mp3"
+  ],
+  "sapato": [
+   "/audio/pt/sapato.mp3"
+  ],
+  "meia": [
+   "/audio/pt/meia.mp3"
+  ],
+  "xicara": [
+   "/audio/pt/xicara.mp3"
+  ],
+  "bule": [
+   "/audio/pt/bule.mp3"
+  ],
+  "abelha": [
+   "/audio/pt/abelha.mp3"
+  ],
+  "agua": [
+   "/audio/pt/agua.mp3"
+  ],
+  "prato": [
+   "/audio/pt/prato.mp3"
+  ],
+  "cade-o-vermelho": [
+   "/audio/pt/cade-o-vermelho.mp3"
+  ],
+  "cade-o-azul": [
+   "/audio/pt/cade-o-azul.mp3"
+  ],
+  "cade-o-amarelo": [
+   "/audio/pt/cade-o-amarelo.mp3"
+  ],
+  "cade-o-verde": [
+   "/audio/pt/cade-o-verde.mp3"
+  ],
+  "cade-o-roxo": [
+   "/audio/pt/cade-o-roxo.mp3"
+  ],
+  "cade-a-laranja": [
+   "/audio/pt/cade-a-laranja.mp3"
+  ],
+  "cade-o-rosa": [
+   "/audio/pt/cade-o-rosa.mp3"
+  ],
+  "cade-o-azul-claro": [
+   "/audio/pt/cade-o-azul-claro.mp3"
+  ],
+  "cade-o-marrom": [
+   "/audio/pt/cade-o-marrom.mp3"
+  ],
+  "cade-o-cinza": [
+   "/audio/pt/cade-o-cinza.mp3"
+  ],
+  "cade-o-preto": [
+   "/audio/pt/cade-o-preto.mp3"
+  ],
+  "cade-o-branco": [
+   "/audio/pt/cade-o-branco.mp3"
+  ],
+  "cade-o-circulo": [
+   "/audio/pt/cade-o-circulo.mp3"
+  ],
+  "cade-o-quadrado": [
+   "/audio/pt/cade-o-quadrado.mp3"
+  ],
+  "cade-o-triangulo": [
+   "/audio/pt/cade-o-triangulo.mp3"
+  ],
+  "cade-a-estrela": [
+   "/audio/pt/cade-a-estrela.mp3"
+  ],
+  "cade-o-coracao": [
+   "/audio/pt/cade-o-coracao.mp3"
+  ],
+  "cade-a-banana": [
+   "/audio/pt/cade-a-banana.mp3"
+  ],
+  "cade-a-maca": [
+   "/audio/pt/cade-a-maca.mp3"
+  ],
+  "cade-a-uva": [
+   "/audio/pt/cade-a-uva.mp3"
+  ],
+  "cade-a-melancia": [
+   "/audio/pt/cade-a-melancia.mp3"
+  ],
+  "cade-o-morango": [
+   "/audio/pt/cade-o-morango.mp3"
+  ],
+  "cade-o-cachorro": [
+   "/audio/pt/cade-o-cachorro.mp3"
+  ],
+  "cade-o-gato": [
+   "/audio/pt/cade-o-gato.mp3"
+  ],
+  "cade-a-vaca": [
+   "/audio/pt/cade-a-vaca.mp3"
+  ],
+  "cade-o-pato": [
+   "/audio/pt/cade-o-pato.mp3"
+  ],
+  "cade-o-sapo": [
+   "/audio/pt/cade-o-sapo.mp3"
+  ],
+  "cade-o-leao": [
+   "/audio/pt/cade-o-leao.mp3"
+  ],
+  "cade-o-elefante": [
+   "/audio/pt/cade-o-elefante.mp3"
+  ],
+  "cade-o-passarinho": [
+   "/audio/pt/cade-o-passarinho.mp3"
+  ],
+  "cade-o-peixe": [
+   "/audio/pt/cade-o-peixe.mp3"
+  ],
+  "cade-a-ovelha": [
+   "/audio/pt/cade-a-ovelha.mp3"
+  ],
+  "cade-o-macaco": [
+   "/audio/pt/cade-o-macaco.mp3"
+  ],
+  "cade-o-sol": [
+   "/audio/pt/cade-o-sol.mp3"
+  ],
+  "cade-a-lua": [
+   "/audio/pt/cade-a-lua.mp3"
+  ],
+  "cade-a-arvore": [
+   "/audio/pt/cade-a-arvore.mp3"
+  ],
+  "cade-a-flor": [
+   "/audio/pt/cade-a-flor.mp3"
+  ],
+  "cade-a-nuvem": [
+   "/audio/pt/cade-a-nuvem.mp3"
+  ],
+  "cade-o-arco-iris": [
+   "/audio/pt/cade-o-arco-iris.mp3"
+  ],
+  "cade-a-chuva": [
+   "/audio/pt/cade-a-chuva.mp3"
+  ],
+  "cade-a-bola": [
+   "/audio/pt/cade-a-bola.mp3"
+  ],
+  "cade-o-carrinho": [
+   "/audio/pt/cade-o-carrinho.mp3"
+  ],
+  "cade-o-ursinho": [
+   "/audio/pt/cade-o-ursinho.mp3"
+  ],
+  "cade-o-balao": [
+   "/audio/pt/cade-o-balao.mp3"
+  ],
+  "cade-o-livrinho": [
+   "/audio/pt/cade-o-livrinho.mp3"
+  ],
+  "cade-o-trenzinho": [
+   "/audio/pt/cade-o-trenzinho.mp3"
+  ],
+  "cade-o-copo": [
+   "/audio/pt/cade-o-copo.mp3"
+  ],
+  "cade-a-colher": [
+   "/audio/pt/cade-a-colher.mp3"
+  ],
+  "o-que-combina-com-chave": [
+   "/audio/pt/o-que-combina-com-chave.mp3"
+  ],
+  "o-que-combina-com-sapato": [
+   "/audio/pt/o-que-combina-com-sapato.mp3"
+  ],
+  "o-que-combina-com-xicara": [
+   "/audio/pt/o-que-combina-com-xicara.mp3"
+  ],
+  "o-que-combina-com-abelha": [
+   "/audio/pt/o-que-combina-com-abelha.mp3"
+  ],
+  "o-que-combina-com-peixe": [
+   "/audio/pt/o-que-combina-com-peixe.mp3"
+  ],
+  "o-que-combina-com-colher": [
+   "/audio/pt/o-que-combina-com-colher.mp3"
+  ],
+  "isso-mesmo": [
+   "/audio/pt/isso-mesmo.mp3",
+   "/audio/pt/isso-mesmo-2.mp3"
+  ],
+  "boa": [
+   "/audio/pt/boa.mp3",
+   "/audio/pt/boa-2.mp3"
+  ],
+  "uau": [
+   "/audio/pt/uau.mp3",
+   "/audio/pt/uau-2.mp3"
+  ],
+  "oba": [
+   "/audio/pt/oba.mp3",
+   "/audio/pt/oba-2.mp3"
+  ],
+  "uhuu": [
+   "/audio/pt/uhuu.mp3",
+   "/audio/pt/uhuu-2.mp3"
+  ],
+  "olha": [
+   "/audio/pt/olha.mp3",
+   "/audio/pt/olha-2.mp3"
+  ],
+  "vamos-tentar": [
+   "/audio/pt/vamos-tentar.mp3",
+   "/audio/pt/vamos-tentar-2.mp3"
+  ],
+  "quase": [
+   "/audio/pt/quase.mp3",
+   "/audio/pt/quase-2.mp3"
+  ],
+  "olha-aqui": [
+   "/audio/pt/olha-aqui.mp3",
+   "/audio/pt/olha-aqui-2.mp3"
+  ],
+  "1": [
+   "/audio/pt/1.mp3"
+  ],
+  "4": [
+   "/audio/pt/4.mp3"
+  ],
+  "5": [
+   "/audio/pt/5.mp3"
+  ],
+  "isso": [
+   "/audio/pt/isso.mp3",
+   "/audio/pt/isso-2.mp3"
+  ],
+  "voce-conseguiu": [
+   "/audio/pt/voce-conseguiu.mp3",
+   "/audio/pt/voce-conseguiu-2.mp3"
+  ],
+  "vamos-la": [
+   "/audio/pt/vamos-la.mp3"
+  ],
+  "cade": [
+   "/audio/pt/cade.mp3"
+  ],
+  "que-legal": [
+   "/audio/pt/que-legal.mp3",
+   "/audio/pt/que-legal-2.mp3"
+  ],
+  "que-cor-e-essa": [
+   "/audio/pt/que-cor-e-essa.mp3"
+  ],
+  "e-vermelho": [
+   "/audio/pt/e-vermelho.mp3"
+  ],
+  "e-azul": [
+   "/audio/pt/e-azul.mp3"
+  ],
+  "e-amarelo": [
+   "/audio/pt/e-amarelo.mp3"
+  ],
+  "e-verde": [
+   "/audio/pt/e-verde.mp3"
+  ],
+  "e-roxo": [
+   "/audio/pt/e-roxo.mp3"
+  ],
+  "e-laranja": [
+   "/audio/pt/e-laranja.mp3"
+  ],
+  "e-rosa": [
+   "/audio/pt/e-rosa.mp3"
+  ],
+  "e-azul-claro": [
+   "/audio/pt/e-azul-claro.mp3"
+  ],
+  "e-marrom": [
+   "/audio/pt/e-marrom.mp3"
+  ],
+  "e-cinza": [
+   "/audio/pt/e-cinza.mp3"
+  ],
+  "e-preto": [
+   "/audio/pt/e-preto.mp3"
+  ],
+  "e-branco": [
+   "/audio/pt/e-branco.mp3"
+  ]
+ },
+ "en": {
+  "dog": [
+   "/audio/en/dog.mp3"
+  ],
+  "cat": [
+   "/audio/en/cat.mp3"
+  ],
+  "cow": [
+   "/audio/en/cow.mp3"
+  ],
+  "fish": [
+   "/audio/en/fish.mp3"
+  ],
+  "bird": [
+   "/audio/en/bird.mp3"
+  ],
+  "duck": [
+   "/audio/en/duck.mp3"
+  ],
+  "lion": [
+   "/audio/en/lion.mp3"
+  ],
+  "ball": [
+   "/audio/en/ball.mp3"
+  ],
+  "apple": [
+   "/audio/en/apple.mp3"
+  ],
+  "car": [
+   "/audio/en/car.mp3"
+  ],
+  "star": [
+   "/audio/en/star.mp3"
+  ],
+  "banana": [
+   "/audio/en/banana.mp3"
+  ],
+  "sun": [
+   "/audio/en/sun.mp3"
+  ],
+  "doll": [
+   "/audio/en/doll.mp3"
+  ],
+  "teddy": [
+   "/audio/en/teddy.mp3"
+  ],
+  "blocks": [
+   "/audio/en/blocks.mp3"
+  ],
+  "bus": [
+   "/audio/en/bus.mp3"
+  ],
+  "plane": [
+   "/audio/en/plane.mp3"
+  ],
+  "boat": [
+   "/audio/en/boat.mp3"
+  ],
+  "train": [
+   "/audio/en/train.mp3"
+  ],
+  "red": [
+   "/audio/en/red.mp3"
+  ],
+  "blue": [
+   "/audio/en/blue.mp3"
+  ],
+  "yellow": [
+   "/audio/en/yellow.mp3"
+  ],
+  "green": [
+   "/audio/en/green.mp3"
+  ],
+  "purple": [
+   "/audio/en/purple.mp3"
+  ],
+  "orange": [
+   "/audio/en/orange.mp3"
+  ],
+  "pink": [
+   "/audio/en/pink.mp3"
+  ],
+  "light-blue": [
+   "/audio/en/light-blue.mp3"
+  ],
+  "brown": [
+   "/audio/en/brown.mp3"
+  ],
+  "gray": [
+   "/audio/en/gray.mp3"
+  ],
+  "black": [
+   "/audio/en/black.mp3"
+  ],
+  "white": [
+   "/audio/en/white.mp3"
+  ],
+  "one": [
+   "/audio/en/one.mp3"
+  ],
+  "two": [
+   "/audio/en/two.mp3"
+  ],
+  "three": [
+   "/audio/en/three.mp3"
+  ]
+ },
  "animals": {
   "bird": "/audio/animals/bird.mp3",
   "cat": "/audio/animals/cat.mp3",
