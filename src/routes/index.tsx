@@ -72,7 +72,11 @@ function Game() {
     return subscribeSettings(() => setAudioSettings({ ...settings }));
   }, []);
 
-  const activity = ACTIVITIES[order[step % order.length]!]!;
+  const devPick =
+    import.meta.env.DEV && typeof window !== "undefined"
+      ? ACTIVITIES.find((a) => a.id === new URLSearchParams(window.location.search).get("fase"))
+      : undefined;
+  const activity = devPick ?? ACTIVITIES[order[step % order.length]!]!;
 
   const completing = useRef(false);
   const handleComplete = useCallback(() => {
