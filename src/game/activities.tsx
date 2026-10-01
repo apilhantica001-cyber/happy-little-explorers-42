@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { ExploreSceneActivity, KidsPlayActivity, SceneSeekActivity, SortActivity } from "./scenes";
 import { Prompt, Tile, TileGrid } from "./ui";
 import { pick, shuffle } from "./shuffle";
 import { sounds, speak, playTone, type SpeechPart } from "./audio";
@@ -615,7 +616,11 @@ export const ACTIVITIES: Activity[] = [
   { id: "english-animals", icon: "🇬🇧", render: (p) => <EnglishWordsActivity {...p} pool={EN_ANIMALS} /> },
   { id: "english-objects", icon: "🔤", render: (p) => <EnglishWordsActivity {...p} pool={EN_OBJECTS} /> },
   { id: "english-numbers", icon: "1️⃣", render: (p) => <EnglishNumbersActivity {...p} /> },
+  { id: "cade-cena", icon: "🙈", render: (p) => <SceneSeekActivity {...p} /> },
+  { id: "no-lugar", icon: "🧺", render: (p) => <SortActivity {...p} /> },
+  { id: "criancas", icon: "🧒", render: (p) => <KidsPlayActivity {...p} /> },
+  { id: "explorar", icon: "🌳", render: (p) => <ExploreSceneActivity {...p} /> },
 ];
 
 /** Easy activities used to open each round. */
-export const EASY_IDS = ["cores", "animais", "baloes", "surpresa", "objetos", "bolhas"];
+export const EASY_IDS = ["explorar", "cores", "animais", "baloes", "surpresa", "objetos", "bolhas"];

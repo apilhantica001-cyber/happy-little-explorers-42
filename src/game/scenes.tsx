@@ -5,7 +5,7 @@ import { playAnimalSound, playMelody, sounds, speak, thingSounds, tone } from ".
 import { ANIMALS, FRUITS, TOYS, cade, praise, type Item } from "./data";
 import { useIdleHint } from "./useIdleHint";
 import { useLock } from "./useLock";
-import { DragTarget, playAnimal, useBox, type ActivityProps } from "./interactions";
+import { DragTarget, useBox, type ActivityProps } from "./interactions";
 
 const finish = (onComplete: () => void, delay = 900) =>
   window.setTimeout(() => {
@@ -256,7 +256,7 @@ export function KidsPlayActivity({ onComplete }: ActivityProps) {
 
 /* ---------------- Exploração livre ---------------- */
 type Thing = { e: string; x: number; y: number; act: () => void; anim: string; item?: Item };
-const animal = (id: string) => ANIMALS.find((a) => a.id === id);
+
 const EXPLORE: { bg: string; things: Thing[] }[] = [
   {
     bg: "linear-gradient(180deg, oklch(0.88 0.08 230), oklch(0.88 0.12 140))",
@@ -337,4 +337,4 @@ export function ExploreSceneActivity({ onComplete, round }: ActivityProps) {
   );
 }
 
-export { animal, playAnimal };
+
