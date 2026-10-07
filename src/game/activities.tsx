@@ -30,6 +30,7 @@ import {
   type ActivityProps,
 } from "./interactions";
 import { EN_ANIMALS, EN_OBJECTS, TOYS } from "./data";
+import { DRAG_LEVELS, DragLevelActivity } from "./drag-levels";
 import {
   BalloonActivity,
   BubbleSwipeActivity,
@@ -620,7 +621,25 @@ export const ACTIVITIES: Activity[] = [
   { id: "no-lugar", icon: "🧺", render: (p) => <SortActivity {...p} /> },
   { id: "criancas", icon: "🧒", render: (p) => <KidsPlayActivity {...p} /> },
   { id: "explorar", icon: "🌳", render: (p) => <ExploreSceneActivity {...p} /> },
+  ...DRAG_LEVELS.map((lv) => ({
+    id: lv.id,
+    icon: lv.icon,
+    render: (p: ActivityProps) => <DragLevelActivity {...p} level={lv} />,
+  })),
 ];
+
+/** Activities where the child holds and drags (or slides) something. */
+export const DRAG_IDS = new Set<string>([
+  "encaixar",
+  "cestinha",
+  "brinquedos",
+  "no-lugar",
+  "abelha",
+  "estrela",
+  "bolhas",
+  ...DRAG_LEVELS.map((l) => l.id),
+]);
+export const EASY_DRAG_IDS = ["d-osso", "d-lixeira", "d-dormir", "d-banho", "d-flores", "d-ovos"];
 
 /** Easy activities used to open each round. */
 export const EASY_IDS = ["explorar", "cores", "animais", "baloes", "surpresa", "objetos", "bolhas"];

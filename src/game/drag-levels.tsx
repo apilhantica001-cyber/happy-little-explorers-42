@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Prompt } from "./ui";
 import { pick, shuffle } from "./shuffle";
 import { playAnimalSound, sounds, speak } from "./audio";
-import { praise } from "./data";
 import { useIdleHint } from "./useIdleHint";
 import { DragTarget, useBox, type ActivityProps } from "./interactions";
 
@@ -423,10 +422,7 @@ export function DragLevelActivity({ onComplete, round, level: def }: ActivityPro
     else if (setup.count && n <= 5) void speak(String(n));
     if (n === setup.pieces.length) {
       done.current = true;
-      window.setTimeout(() => {
-        void speak(praise());
-        sounds.sparkle();
-      }, 500);
+      window.setTimeout(() => sounds.sparkle(), 400);
       window.setTimeout(onComplete, 1500);
     }
     return true;
