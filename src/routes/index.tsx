@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX } from "lucide-react";
-import { ACTIVITIES, EASY_IDS } from "@/game/activities";
+import { ACTIVITIES, DRAG_IDS, EASY_DRAG_IDS, EASY_IDS } from "@/game/activities";
 import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
 import {
@@ -50,16 +50,28 @@ export const Route = createFileRoute("/")({
 
 const ROUND_LEN = 10;
 
-function buildOrder(prev: number[] = []): number[] {
+type Mode = "tudo" | "arrastar" | "tocar";
+
+function poolFor(mode: Mode): number[] {
+  return ACTIVITIES.map((a, i) => ({ a, i }))
+    .filter(({ a }) => (mode === "tudo" ? true : mode === "arrastar" ? DRAG_IDS.has(a.id) : !DRAG_IDS.has(a.id)))
+    .map(({ i }) => i);
+}
+
+function buildOrder(mode: Mode = "tudo", prev: number[] = []): number[] {
+  const pool = poolFor(mode);
   const last = new Set(prev.slice(-3));
-  const easy = shuffle(ACTIVITIES.map((a, i) => (EASY_IDS.includes(a.id) ? i : -1)).filter((i) => i >= 0 && !last.has(i)));
-  const first = easy[0] ?? 0;
-  const rest = shuffle(ACTIVITIES.map((_, i) => i).filter((i) => i !== first && !last.has(i)));
+  const easyIds = mode === "arrastar" ? EASY_DRAG_IDS : EASY_IDS;
+  const easy = shuffle(pool.filter((i) => easyIds.includes(ACTIVITIES[i]?.id ?? "") && !last.has(i)));
+  const first = easy[0] ?? pool[0] ?? 0;
+  const rest = shuffle(pool.filter((i) => i !== first && !last.has(i)));
   return [first, ...rest].slice(0, ROUND_LEN);
 }
 
 function Game() {
   const [started, setStarted] = useState(false);
+  const [mode, setMode] = useState<Mode | null>(null);
+  const modeRef = useRef<Mode>("tudo");
   const [order, setOrder] = useState(() => buildOrder());
   const [step, setStep] = useState(0);
   const [round, setRound] = useState(0);
@@ -89,8 +101,8 @@ function Game() {
       setCelebrating(false);
       setStep((s) => {
         const next = s + 1;
-        if (next >= ROUND_LEN) {
-          setOrder((o) => buildOrder(o));
+        if (next >= order.length) {
+          setOrder((o) => buildOrder(modeRef.current, o));
           setRound((r) => r + 1);
           return 0;
         }
@@ -100,6 +112,15 @@ function Game() {
         completing.current = false;
       }, 400);
     }, 1600);
+  }, [order.length]);
+
+  const choose = useCallback((m: Mode) => {
+    sounds.yay();
+    modeRef.current = m;
+    setMode(m);
+    setOrder(buildOrder(m));
+    setStep(0);
+    setRound((r) => r + 1);
   }, []);
 
   const key = useMemo(() => `${round}-${step}-${activity.id}`, [round, step, activity.id]);
@@ -107,7 +128,7 @@ function Game() {
   const restart = useCallback(() => {
     setCelebrating(false);
     completing.current = false;
-    setOrder(buildOrder());
+    setOrder(buildOrder(modeRef.current));
     setStep(0);
     setRound((r) => r + 1);
   }, []);
@@ -173,6 +194,9 @@ function Game() {
             <Button type="button" variant="secondary" className="h-12 text-base" onClick={restart}>
               <RotateCcw className="size-5" /> Reiniciar brincadeiras
             </Button>
+            <Button type="button" variant="secondary" className="h-12 text-base" onClick={() => setMode(null)}>
+              🧸 Escolher tipo de brincadeira
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -199,6 +223,33 @@ function Game() {
           ▶️
         </button>
         <p className="text-xl font-bold text-foreground/70">Toque para brincar</p>
+      </Stage>
+    );
+  }
+
+  if (!mode) {
+    const opts: { m: Mode; icon: string; label: string; say: string }[] = [
+      { m: "arrastar", icon: "✋", label: "Arrastar", say: "Arrastar!" },
+      { m: "tocar", icon: "👆", label: "Tocar", say: "Tocar!" },
+      { m: "tudo", icon: "🎲", label: "Tudo", say: "Tudo!" },
+    ];
+    return (
+      <Stage>
+        {audioControls}
+        <div className="grid w-full max-w-md gap-5">
+          {opts.map((o) => (
+            <button
+              key={o.m}
+              type="button"
+              onClick={() => choose(o.m)}
+              aria-label={o.label}
+              className="flex h-[22dvh] items-center justify-center gap-4 rounded-4xl bg-card text-[clamp(4rem,18vw,6rem)] shadow-soft transition-transform active:scale-95"
+            >
+              <span className={o.m === "arrastar" ? "animate-wiggle" : "animate-bob"}>{o.icon}</span>
+              <span className="text-3xl font-black text-foreground">{o.label}</span>
+            </button>
+          ))}
+        </div>
       </Stage>
     );
   }
