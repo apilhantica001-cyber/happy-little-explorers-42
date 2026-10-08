@@ -241,7 +241,7 @@ function Game() {
             <button
               key={o.m}
               type="button"
-              onClick={() => choose(o.m)}
+              onClick={() => { speak(o.say); choose(o.m); }}
               aria-label={o.label}
               className="flex h-[22dvh] items-center justify-center gap-4 rounded-4xl bg-card text-[clamp(4rem,18vw,6rem)] shadow-soft transition-transform active:scale-95"
             >
