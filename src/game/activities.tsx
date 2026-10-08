@@ -95,15 +95,16 @@ function PickActivity({
       setHit(item.id);
       setHelp(false);
       sounds.yay();
-      speak(...(sayHit ? sayHit(item) : []), praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= rounds) onComplete();
-        else {
-          setHit(null);
-          setRoundIdx((r) => r + 1);
-          window.setTimeout(lock.release, 250);
-        }
-      }, 900);
+      void speak(...(sayHit ? sayHit(item) : []), praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= rounds) onComplete();
+          else {
+            setHit(null);
+            setRoundIdx((r) => r + 1);
+            window.setTimeout(lock.release, 250);
+          }
+        }, 250);
+      });
     } else {
       if (hit) return;
       setWrong(item.id);
@@ -299,11 +300,12 @@ function CountActivity({ onComplete }: ActivityProps) {
     if (next.length === board.total) {
       window.setTimeout(() => {
         sounds.cheer();
-        speak(String(board.total), praise());
-        window.setTimeout(() => {
-          if (roundIdx + 1 >= 3) onComplete();
-          else setRoundIdx((r) => r + 1);
-        }, 800);
+        void speak(String(board.total), praise()).then(() => {
+          window.setTimeout(() => {
+            if (roundIdx + 1 >= 3) onComplete();
+            else setRoundIdx((r) => r + 1);
+          }, 250);
+        });
       }, 500);
     }
   };

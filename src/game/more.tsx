@@ -432,11 +432,12 @@ export function FindActivity({ onComplete, round }: ActivityProps) {
       const fn = animalSounds[board.target.id] ?? thingSounds[board.target.id];
       if (fn) fn();
       else sounds.sparkle();
-      speak("Achou!", praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= 2) finish(onComplete, 0);
-        else setRoundIdx((r) => r + 1);
-      }, 1600);
+      void speak("Achou!", praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= 2) finish(onComplete, 0);
+          else setRoundIdx((r) => r + 1);
+        }, 250);
+      });
     } else {
       if (found) return;
       setPeek((p) => [...p, i]);
@@ -496,16 +497,17 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
       if (!lock.tryLock()) return;
       setHit(o.color.id);
       sounds.yay();
-      speak(board.target.color.label, ...(Math.random() < 0.4 ? [{ en: COLOR_EN[board.target.color.id] ?? "" }] : []), praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= 3) onComplete();
-        else {
-          setHit(null);
-          setHelp(false);
-          setRoundIdx((r) => r + 1);
-          window.setTimeout(lock.release, 250);
-        }
-      }, 1000);
+      void speak(board.target.color.label, ...(Math.random() < 0.4 ? [{ en: COLOR_EN[board.target.color.id] ?? "" }] : []), praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= 3) onComplete();
+          else {
+            setHit(null);
+            setHelp(false);
+            setRoundIdx((r) => r + 1);
+            window.setTimeout(lock.release, 250);
+          }
+        }, 250);
+      });
     } else {
       if (hit) return;
       setWrong(o.color.id);
