@@ -496,16 +496,17 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
       if (!lock.tryLock()) return;
       setHit(o.color.id);
       sounds.yay();
-      speak(board.target.color.label, ...(Math.random() < 0.4 ? [{ en: COLOR_EN[board.target.color.id] ?? "" }] : []), praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= 3) onComplete();
-        else {
-          setHit(null);
-          setHelp(false);
-          setRoundIdx((r) => r + 1);
-          window.setTimeout(lock.release, 250);
-        }
-      }, 1000);
+      void speak(board.target.color.label, ...(Math.random() < 0.4 ? [{ en: COLOR_EN[board.target.color.id] ?? "" }] : []), praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= 3) onComplete();
+          else {
+            setHit(null);
+            setHelp(false);
+            setRoundIdx((r) => r + 1);
+            window.setTimeout(lock.release, 250);
+          }
+        }, 250);
+      });
     } else {
       if (hit) return;
       setWrong(o.color.id);
