@@ -21,6 +21,72 @@
   "guarde-os-brinquedos-na-caixa": [
    "/audio/pt/guarde-os-brinquedos-na-caixa.mp3"
   ],
+  "leve-o-ossinho-para-o-cachorrinho": [
+   "/audio/pt/leve-o-ossinho-para-o-cachorrinho.mp3"
+  ],
+  "cada-bichinho-come-uma-coisa": [
+   "/audio/pt/cada-bichinho-come-uma-coisa.mp3"
+  ],
+  "leve-cada-bichinho-ate-a-sua-sombra": [
+   "/audio/pt/leve-cada-bichinho-ate-a-sua-sombra.mp3"
+  ],
+  "estacione-os-carrinhos": [
+   "/audio/pt/estacione-os-carrinhos.mp3"
+  ],
+  "cada-bolinha-na-sua-cor": [
+   "/audio/pt/cada-bolinha-na-sua-cor.mp3"
+  ],
+  "leve-cada-bichinho-para-a-sua-casinha": [
+   "/audio/pt/leve-cada-bichinho-para-a-sua-casinha.mp3"
+  ],
+  "vamos-arrumar-tudo-no-lixinho": [
+   "/audio/pt/vamos-arrumar-tudo-no-lixinho.mp3"
+  ],
+  "o-sol-no-dia-a-lua-na-noite": [
+   "/audio/pt/o-sol-no-dia-a-lua-na-noite.mp3"
+  ],
+  "vamos-montar-uma-torre": [
+   "/audio/pt/vamos-montar-uma-torre.mp3"
+  ],
+  "o-cachorrinho-quer-a-bola": [
+   "/audio/pt/o-cachorrinho-quer-a-bola.mp3"
+  ],
+  "coloque-as-macas-de-volta-na-arvore": [
+   "/audio/pt/coloque-as-macas-de-volta-na-arvore.mp3"
+  ],
+  "hora-do-banho": [
+   "/audio/pt/hora-do-banho.mp3"
+  ],
+  "os-bichinhos-estao-com-sono-leve-para-a-caminha": [
+   "/audio/pt/os-bichinhos-estao-com-sono-leve-para-a-caminha.mp3"
+  ],
+  "encontre-o-par-igual": [
+   "/audio/pt/encontre-o-par-igual.mp3"
+  ],
+  "leve-o-foguete-ate-a-lua": [
+   "/audio/pt/leve-o-foguete-ate-a-lua.mp3"
+  ],
+  "coloque-as-flores-no-vaso": [
+   "/audio/pt/coloque-as-flores-no-vaso.mp3"
+  ],
+  "leve-os-ovinhos-para-o-ninho": [
+   "/audio/pt/leve-os-ovinhos-para-o-ninho.mp3"
+  ],
+  "quem-nada-vai-pro-mar-quem-voa-vai-pro-ceu": [
+   "/audio/pt/quem-nada-vai-pro-mar-quem-voa-vai-pro-ceu.mp3"
+  ],
+  "vamos-fazer-uma-pizza": [
+   "/audio/pt/vamos-fazer-uma-pizza.mp3"
+  ],
+  "cada-fruta-no-seu-cestinho": [
+   "/audio/pt/cada-fruta-no-seu-cestinho.mp3"
+  ],
+  "o-gatinho-quer-o-peixinho": [
+   "/audio/pt/o-gatinho-quer-o-peixinho.mp3"
+  ],
+  "cada-carrinho-na-garagem-da-sua-cor": [
+   "/audio/pt/cada-carrinho-na-garagem-da-sua-cor.mp3"
+  ],
   "coloque-as-frutinhas-na-cestinha": [
    "/audio/pt/coloque-as-frutinhas-na-cestinha.mp3"
   ],
@@ -49,12 +115,56 @@
    "/audio/pt/achou.mp3",
    "/audio/pt/achou-2.mp3"
   ],
+  "coloque-cada-coisa-no-lugar": [
+   "/audio/pt/coloque-cada-coisa-no-lugar.mp3"
+  ],
   "muito-bem": [
    "/audio/pt/muito-bem.mp3",
    "/audio/pt/muito-bem-2.mp3"
   ],
   "vamos-brincar": [
    "/audio/pt/vamos-brincar.mp3"
+  ],
+  "olha": [
+   "/audio/pt/olha.mp3",
+   "/audio/pt/olha-2.mp3"
+  ],
+  "que-legal": [
+   "/audio/pt/que-legal.mp3",
+   "/audio/pt/que-legal-2.mp3"
+  ],
+  "bola": [
+   "/audio/pt/bola.mp3"
+  ],
+  "tambor": [
+   "/audio/pt/tambor.mp3"
+  ],
+  "balao": [
+   "/audio/pt/balao.mp3"
+  ],
+  "toque-nos-ovinhos-para-nascer-os-pintinhos": [
+   "/audio/pt/toque-nos-ovinhos-para-nascer-os-pintinhos.mp3"
+  ],
+  "toque-nas-plantinhas-para-crescer-as-flores": [
+   "/audio/pt/toque-nas-plantinhas-para-crescer-as-flores.mp3"
+  ],
+  "vamos-fazer-pipoca-toque-no-milho": [
+   "/audio/pt/vamos-fazer-pipoca-toque-no-milho.mp3"
+  ],
+  "acenda-as-estrelinhas": [
+   "/audio/pt/acenda-as-estrelinhas.mp3"
+  ],
+  "abra-os-presentes": [
+   "/audio/pt/abra-os-presentes.mp3"
+  ],
+  "os-bichinhos-estao-dormindo-toque-para-acordar": [
+   "/audio/pt/os-bichinhos-estao-dormindo-toque-para-acordar.mp3"
+  ],
+  "toque-nas-nuvens-para-chover": [
+   "/audio/pt/toque-nas-nuvens-para-chover.mp3"
+  ],
+  "acenda-as-luzes": [
+   "/audio/pt/acenda-as-luzes.mp3"
   ],
   "vermelho": [
    "/audio/pt/vermelho.mp3"
@@ -200,17 +310,11 @@
   "chuva": [
    "/audio/pt/chuva.mp3"
   ],
-  "bola": [
-   "/audio/pt/bola.mp3"
-  ],
   "carrinho": [
    "/audio/pt/carrinho.mp3"
   ],
   "ursinho": [
    "/audio/pt/ursinho.mp3"
-  ],
-  "balao": [
-   "/audio/pt/balao.mp3"
   ],
   "trenzinho": [
    "/audio/pt/trenzinho.mp3"
@@ -289,9 +393,6 @@
   ],
   "blocos": [
    "/audio/pt/blocos.mp3"
-  ],
-  "tambor": [
-   "/audio/pt/tambor.mp3"
   ],
   "piano": [
    "/audio/pt/piano.mp3"
@@ -514,10 +615,6 @@
    "/audio/pt/uhuu.mp3",
    "/audio/pt/uhuu-2.mp3"
   ],
-  "olha": [
-   "/audio/pt/olha.mp3",
-   "/audio/pt/olha-2.mp3"
-  ],
   "vamos-tentar": [
    "/audio/pt/vamos-tentar.mp3",
    "/audio/pt/vamos-tentar-2.mp3"
@@ -539,6 +636,15 @@
   "5": [
    "/audio/pt/5.mp3"
   ],
+  "arrastar": [
+   "/audio/pt/arrastar.mp3"
+  ],
+  "tudo": [
+   "/audio/pt/tudo.mp3"
+  ],
+  "o-que-vamos-brincar": [
+   "/audio/pt/o-que-vamos-brincar.mp3"
+  ],
   "isso": [
    "/audio/pt/isso.mp3",
    "/audio/pt/isso-2.mp3"
@@ -552,10 +658,6 @@
   ],
   "cade": [
    "/audio/pt/cade.mp3"
-  ],
-  "que-legal": [
-   "/audio/pt/que-legal.mp3",
-   "/audio/pt/que-legal-2.mp3"
   ],
   "que-cor-e-essa": [
    "/audio/pt/que-cor-e-essa.mp3"
