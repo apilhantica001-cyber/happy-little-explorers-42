@@ -31,6 +31,7 @@ import {
 } from "./interactions";
 import { EN_ANIMALS, EN_OBJECTS, TOYS } from "./data";
 import { DRAG_LEVELS, DragLevelActivity } from "./drag-levels";
+import { TAP_LEVELS, TapLevelActivity } from "./tap-levels";
 import {
   BalloonActivity,
   BubbleSwipeActivity,
@@ -625,6 +626,11 @@ export const ACTIVITIES: Activity[] = [
     id: lv.id,
     icon: lv.icon,
     render: (p: ActivityProps) => <DragLevelActivity {...p} level={lv} />,
+  })),
+  ...TAP_LEVELS.map((lv) => ({
+    id: lv.id,
+    icon: lv.icon,
+    render: (p: ActivityProps) => <TapLevelActivity {...p} level={lv} />,
   })),
 ];
 

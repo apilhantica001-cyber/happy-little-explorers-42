@@ -14,6 +14,7 @@ for (const f of readdirSync("src/game").filter((x) => x.endsWith(".tsx"))) {
   const src = readFileSync(`src/game/${f}`, "utf8");
   for (const m of src.matchAll(/speak\(\s*"([^"]+)"/g)) pt.add(m[1]!);
   for (const m of src.matchAll(/say="([^"]+)"/g)) pt.add(m[1]!);
+  for (const m of src.matchAll(/say: "([^"]+)"/g)) pt.add(m[1]!);
   for (const m of src.matchAll(/speak\("[^"]*",\s*"([^"]+)"/g)) pt.add(m[1]!);
 }
 for (const m of readFileSync("src/routes/index.tsx", "utf8").matchAll(/speak\(\s*"([^"]+)"/g)) pt.add(m[1]!);
@@ -30,7 +31,7 @@ for (const i of items) {
 for (const i of [...D.COLORS, ...D.SHAPES, ...D.FRUITS, ...D.ANIMALS, ...D.NATURE, ...D.OBJECTS]) pt.add(D.cade(i.label));
 for (const p of D.PAIRS) pt.add(`O que combina com ${p.a.label}?`);
 [...D.PRAISE, ...D.ENCOURAGE].forEach((s) => pt.add(s));
-["1", "2", "3", "4", "5"].forEach((n) => pt.add(n));
+["1", "2", "3", "4", "5", "Arrastar!", "Tocar!", "Tudo!", "O que vamos brincar?"].forEach((n) => pt.add(n));
 ["Olha!", "Isso!", "Você conseguiu!", "Vamos lá!", "Cadê?", "Achou!", "Que legal!", "Vamos tentar?", "Que cor é essa?"].forEach((s) => pt.add(s));
 for (const i of D.COLORS) pt.add(`É ${i.label}!`);
 
