@@ -95,15 +95,16 @@ function PickActivity({
       setHit(item.id);
       setHelp(false);
       sounds.yay();
-      speak(...(sayHit ? sayHit(item) : []), praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= rounds) onComplete();
-        else {
-          setHit(null);
-          setRoundIdx((r) => r + 1);
-          window.setTimeout(lock.release, 250);
-        }
-      }, 900);
+      void speak(...(sayHit ? sayHit(item) : []), praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= rounds) onComplete();
+          else {
+            setHit(null);
+            setRoundIdx((r) => r + 1);
+            window.setTimeout(lock.release, 250);
+          }
+        }, 250);
+      });
     } else {
       if (hit) return;
       setWrong(item.id);
