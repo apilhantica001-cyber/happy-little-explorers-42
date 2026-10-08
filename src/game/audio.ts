@@ -109,7 +109,12 @@ export function setMuted(on: boolean) {
   settings.muted = on;
   getCtx();
   applyVolume();
-  if (on) stopVoice();
+  if (on) {
+    stopVoice();
+    stopMusic();
+  } else if (settings.musicOn) {
+    startMusic();
+  }
   persist();
   notify();
 }
@@ -123,7 +128,8 @@ export function setMusicOn(on: boolean) {
   settings.musicOn = on;
   getCtx();
   applyVolume();
-  if (on) startMusic();
+  if (on && !settings.muted) startMusic();
+  else stopMusic();
   persist();
   notify();
 }
@@ -485,8 +491,12 @@ let musicStep = 0;
 let musicTimer: number | null = null;
 
 function musicTick() {
+  // A timeout that has fired is no longer active. Clear its handle before
+  // checking settings so startMusic() can restart playback after mute/toggle.
+  musicTimer = null;
+  if (typeof window === "undefined" || !settings.musicOn || settings.muted) return;
   const c = getCtx();
-  if (!c || !musicGain || !settings.musicOn || settings.muted) return;
+  if (!c || !musicGain) return;
   const th = THEMES[theme % THEMES.length]!;
   const base = th.notes[musicStep % th.notes.length]!;
   [base, base / 2].forEach((f, i) => {
