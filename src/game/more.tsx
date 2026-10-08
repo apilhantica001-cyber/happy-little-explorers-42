@@ -432,11 +432,12 @@ export function FindActivity({ onComplete, round }: ActivityProps) {
       const fn = animalSounds[board.target.id] ?? thingSounds[board.target.id];
       if (fn) fn();
       else sounds.sparkle();
-      speak("Achou!", praise());
-      window.setTimeout(() => {
-        if (roundIdx + 1 >= 2) finish(onComplete, 0);
-        else setRoundIdx((r) => r + 1);
-      }, 1600);
+      void speak("Achou!", praise()).then(() => {
+        window.setTimeout(() => {
+          if (roundIdx + 1 >= 2) finish(onComplete, 0);
+          else setRoundIdx((r) => r + 1);
+        }, 250);
+      });
     } else {
       if (found) return;
       setPeek((p) => [...p, i]);
