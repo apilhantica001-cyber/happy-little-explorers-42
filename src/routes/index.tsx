@@ -4,6 +4,7 @@ import { Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX } from "lu
 import { ACTIVITIES, DRAG_IDS, EASY_DRAG_IDS, EASY_IDS } from "@/game/activities";
 import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
+import capaAsset from "@/assets/capa.jpg.asset.json";
 import {
   loadSettings,
   setChannel,
@@ -43,10 +44,14 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: COVER_URL },
+      { name: "twitter:image", content: COVER_URL },
     ],
   }),
   component: Game,
 });
+
+const COVER_URL = `https://happy-little-explorers-42.lovable.app${capaAsset.url}`;
 
 const ROUND_LEN = 10;
 
@@ -206,7 +211,11 @@ function Game() {
   if (!started) {
     return (
       <Stage>
-        <div className="animate-bob text-[clamp(5rem,28vw,10rem)]">🧸</div>
+        <img
+          src={capaAsset.url}
+          alt="Toca Toca — brincadeiras coloridas para bebês"
+          className="max-h-[34dvh] w-full max-w-md rounded-4xl object-cover shadow-soft"
+        />
         <h1 className="text-center text-4xl font-black text-foreground">Toca Toca</h1>
         <button
           type="button"
