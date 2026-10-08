@@ -300,11 +300,12 @@ function CountActivity({ onComplete }: ActivityProps) {
     if (next.length === board.total) {
       window.setTimeout(() => {
         sounds.cheer();
-        speak(String(board.total), praise());
-        window.setTimeout(() => {
-          if (roundIdx + 1 >= 3) onComplete();
-          else setRoundIdx((r) => r + 1);
-        }, 800);
+        void speak(String(board.total), praise()).then(() => {
+          window.setTimeout(() => {
+            if (roundIdx + 1 >= 3) onComplete();
+            else setRoundIdx((r) => r + 1);
+          }, 250);
+        });
       }, 500);
     }
   };
