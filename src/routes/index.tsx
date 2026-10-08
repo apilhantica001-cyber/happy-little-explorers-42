@@ -211,11 +211,7 @@ function Game() {
   if (!started) {
     return (
       <Stage>
-        <img
-          src={capaAsset.url}
-          alt="Toca Toca — brincadeiras coloridas para bebês"
-          className="max-h-[34dvh] w-full max-w-md rounded-4xl object-cover shadow-soft"
-        />
+        <div className="animate-bob text-[clamp(5rem,28vw,10rem)]">🧸</div>
         <h1 className="text-center text-4xl font-black text-foreground">Toca Toca</h1>
         <button
           type="button"
