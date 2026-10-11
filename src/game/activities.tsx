@@ -112,7 +112,7 @@ function PickActivity({
       sounds.gentle();
       speak(encourage());
       window.setTimeout(() => setWrong(null), 500);
-      window.setTimeout(() => setHelp(false), 1600);
+      window.setTimeout(() => setHelp(false), 5200);
     }
   };
 
@@ -241,7 +241,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
       setWrong(idx);
       sounds.gentle();
       speak("Olha, esse é pequeno!");
-      window.setTimeout(() => setWrong(null), 500);
+      window.setTimeout(() => setWrong(null), 5200);
     }
   };
 
@@ -373,7 +373,7 @@ function AssociationActivity({ onComplete }: ActivityProps) {
     } else {
       setWrong(o.id);
       sounds.gentle();
-      window.setTimeout(() => setWrong(null), 500);
+      window.setTimeout(() => setWrong(null), 5200);
     }
   };
 

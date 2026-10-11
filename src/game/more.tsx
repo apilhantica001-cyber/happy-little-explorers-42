@@ -515,7 +515,7 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
       sounds.gentle();
       speak(o.color.label, encourage());
       window.setTimeout(() => setWrong(null), 500);
-      window.setTimeout(() => setHelp(false), 1600);
+      window.setTimeout(() => setHelp(false), 5200);
     }
   };
 
