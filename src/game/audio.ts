@@ -62,6 +62,19 @@ let fxGain: GainNode | null = null;
 let voiceGain: GainNode | null = null;
 let musicGain: GainNode | null = null;
 let speaking = false;
+const speechListeners = new Set<() => void>();
+export const isNarrating = () => speaking;
+export const subscribeNarration = (fn: () => void) => {
+  speechListeners.add(fn);
+  return () => { speechListeners.delete(fn); };
+};
+type NarrationJob = { parts: SpeechPart[]; sig: string; resolve: (ok: boolean) => void };
+const narrationQueue: NarrationJob[] = [];
+let activeSig = "";
+let activeNarration: Promise<boolean> | null = null;
+export async function waitForNarration() {
+  while (activeNarration) await activeNarration;
+}
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -201,12 +214,15 @@ let lastSig = "";
 let lastAt = 0;
 
 function setSpeaking(on: boolean) {
+  if (speaking === on) return;
   speaking = on;
   applyVolume();
+  speechListeners.forEach((fn) => fn());
 }
 
 function stopVoice() {
   voiceToken++;
+  narrationQueue.splice(0).forEach((job) => job.resolve(false));
   try {
     voiceSrc?.stop();
   } catch {
@@ -249,9 +265,10 @@ async function sayPart(part: SpeechPart, token: number) {
   if (!url) return fallbackSpeak(text, en, token);
   const buf = await load(url);
   if (token !== voiceToken) return;
-  if (!buf || !voiceGain) return fallbackSpeak(text, en, token);
+    if (!buf || !voiceGain) return fallbackSpeak(text, en, token);
+    const destination = voiceGain;
   await new Promise<void>((resolve) => {
-    const src = playBuffer(buf, voiceGain!);
+    const src = playBuffer(buf, destination);
     if (!src) return resolve();
     voiceSrc = src;
     src.onended = () => resolve();
@@ -260,30 +277,46 @@ async function sayPart(part: SpeechPart, token: number) {
 
 /**
  * Narrate one or more parts in order (a string is Portuguese, `{ en }` is English).
- * Starting a new narration stops the previous one; an identical request within
- * 1.5 s is ignored. Resolves true when it finished without being interrupted.
+ * Narrations are serialized; repeated requests are ignored, never restarted.
+ * Only the parent's mute control may cancel speech.
  */
 export function speak(...parts: SpeechPart[]): Promise<boolean> {
   if (typeof window === "undefined" || settings.muted || settings.voice <= 0) return Promise.resolve(false);
   const sig = JSON.stringify(parts);
   const now = Date.now();
+  if (sig === activeSig || narrationQueue.some((job) => job.sig === sig)) return Promise.resolve(false);
   if (sig === lastSig && now - lastAt < 1500) return Promise.resolve(false);
-  lastSig = sig;
-  lastAt = now;
+  if (!parts.length || narrationQueue.length >= 6) return Promise.resolve(false);
   getCtx();
-  stopVoice();
-  const token = voiceToken;
   setSpeaking(true);
-  return (async () => {
-    for (const p of parts) {
+  const result = new Promise<boolean>((resolve) => narrationQueue.push({ parts, sig, resolve }));
+  drainNarration();
+  return result;
+}
+
+function drainNarration() {
+  if (activeNarration) return;
+  const job = narrationQueue.shift();
+  if (!job) { setSpeaking(false); return; }
+  activeSig = job.sig;
+  lastSig = job.sig;
+  lastAt = Date.now();
+  const token = voiceToken;
+  activeNarration = (async () => {
+    for (let i = 0; i < job.parts.length; i++) {
       if (token !== voiceToken) return false;
-      await sayPart(p, token);
-      if (parts.length > 1) await new Promise((r) => window.setTimeout(r, 120));
+      const part = job.parts[i];
+      if (part) await sayPart(part, token);
+      if (i < job.parts.length - 1) await new Promise((r) => window.setTimeout(r, 120));
     }
-    if (token !== voiceToken) return false;
-    setSpeaking(false);
-    return true;
+    return token === voiceToken;
   })();
+  void activeNarration.catch(() => false).then((ok) => {
+    activeSig = "";
+    activeNarration = null;
+    job.resolve(ok);
+    drainNarration();
+  });
 }
 
 export function speakEn(text: string) {

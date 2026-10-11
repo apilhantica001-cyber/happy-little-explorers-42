@@ -15,6 +15,7 @@ import {
   speak,
   subscribeSettings,
   unlockAudio,
+  waitForNarration,
 } from "@/game/audio";
 import { Button } from "@/components/ui/button";
 import {
@@ -81,6 +82,8 @@ function Game() {
   const [step, setStep] = useState(0);
   const [round, setRound] = useState(0);
   const [celebrating, setCelebrating] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const transitionVersion = useRef(0);
   const [audioSettings, setAudioSettings] = useState({ ...settings });
 
   useEffect(() => {
@@ -93,16 +96,21 @@ function Game() {
     import.meta.env.DEV && typeof window !== "undefined"
       ? ACTIVITIES.find((a) => a.id === new URLSearchParams(window.location.search).get("fase"))
       : undefined;
-  const activity = devPick ?? ACTIVITIES[order[step % order.length]!]!;
+  const activity = devPick ?? ACTIVITIES[order[step % order.length] ?? 0] ?? ACTIVITIES[0];
 
   const completing = useRef(false);
   const handleComplete = useCallback(() => {
     if (completing.current) return;
     completing.current = true;
-    setCelebrating(true);
-    sounds.cheer();
-    speak("Muito bem!");
-    window.setTimeout(() => {
+    setTransitioning(true);
+    const version = transitionVersion.current;
+    void (async () => {
+      await waitForNarration();
+      if (version !== transitionVersion.current) return;
+      setCelebrating(true);
+      sounds.cheer();
+      await Promise.all([speak("Muito bem!"), new Promise((r) => window.setTimeout(r, 1600))]);
+      if (version !== transitionVersion.current) return;
       setCelebrating(false);
       setStep((s) => {
         const next = s + 1;
@@ -114,12 +122,18 @@ function Game() {
         return next;
       });
       window.setTimeout(() => {
+        if (version !== transitionVersion.current) return;
         completing.current = false;
+        setTransitioning(false);
       }, 400);
-    }, 1600);
+    })();
   }, [order.length]);
 
   const choose = useCallback((m: Mode) => {
+    transitionVersion.current++;
+    completing.current = false;
+    setTransitioning(false);
+    setCelebrating(false);
     sounds.yay();
     modeRef.current = m;
     setMode(m);
@@ -128,9 +142,11 @@ function Game() {
     setRound((r) => r + 1);
   }, []);
 
-  const key = useMemo(() => `${round}-${step}-${activity.id}`, [round, step, activity.id]);
+  const key = useMemo(() => `${round}-${step}-${activity?.id ?? ""}`, [round, step, activity?.id]);
 
   const restart = useCallback(() => {
+    transitionVersion.current++;
+    setTransitioning(false);
     setCelebrating(false);
     completing.current = false;
     setOrder(buildOrder(modeRef.current));
@@ -139,7 +155,7 @@ function Game() {
   }, []);
 
   const audioControls = started ? (
-    <div className="fixed right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex gap-2">
+    <div data-parent-controls className="fixed right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-40 flex gap-2">
       <Button
         type="button"
         size="icon"
@@ -273,9 +289,9 @@ function Game() {
         ))}
       </div>
       <div key={key} className="flex w-full flex-col items-center gap-6">
-        {activity.render({ onComplete: handleComplete, round })}
+        {activity?.render({ onComplete: handleComplete, round })}
       </div>
-      {celebrating && <div className="fixed inset-0 z-30" aria-hidden />}
+      {transitioning && <div className="fixed inset-0 z-30" aria-hidden />}
       <Celebration show={celebrating} />
     </Stage>
   );

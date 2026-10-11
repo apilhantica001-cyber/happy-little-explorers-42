@@ -1,9 +1,20 @@
-import type { ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode, type SyntheticEvent } from "react";
+import { isNarrating, subscribeNarration } from "./audio";
+import { RocketGuide } from "./rocket-guide";
 
 export function Stage({ children }: { children: ReactNode }) {
+  const busy = useSyncExternalStore(subscribeNarration, isNarrating, () => false);
+  const guard = (event: SyntheticEvent) => {
+    if (!isNarrating()) return;
+    const target = event.target;
+    if (target instanceof Element && target.closest("[data-parent-controls]")) return;
+    event.preventDefault();
+    event.stopPropagation();
+  };
   return (
-    <main className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
+    <main aria-busy={busy} onClickCapture={guard} onPointerDownCapture={guard} onPointerMoveCapture={guard} onKeyDownCapture={guard} className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
       {children}
+      <RocketGuide />
     </main>
   );
 }
@@ -43,6 +54,7 @@ export function Tile({
   return (
     <button
       type="button"
+      data-answer-hint={hint && state !== "happy" ? "true" : undefined}
       onClick={onClick}
       style={bg ? { background: bg } : {}}
       className={[
