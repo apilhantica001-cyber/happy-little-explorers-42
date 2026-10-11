@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 /** One shared flight follows the real answer element, never a guessed position. */
 export function RocketGuide() {
@@ -30,9 +30,11 @@ export function RocketGuide() {
       const y = box.top + box.height / 2;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const land = () => {
+        if (!next.isConnected || next.getAttribute("data-answer-hint") !== "true") return;
+        const landed = next.getBoundingClientRect();
         ship.hidden = true;
-        fireworks.style.left = `${x}px`;
-        fireworks.style.top = `${y}px`;
+        fireworks.style.left = `${landed.left + landed.width / 2}px`;
+        fireworks.style.top = `${landed.top + landed.height / 2}px`;
         fireworks.hidden = false;
         fireworks.getAnimations({ subtree: true }).forEach((a) => { a.cancel(); a.play(); });
         timer = window.setTimeout(() => { fireworks.hidden = true; }, 1800);
@@ -60,7 +62,7 @@ export function RocketGuide() {
       <div ref={rocket} hidden className="hint-rocket absolute left-0 top-0"><span>🚀</span><i>✨</i></div>
       <div ref={burst} hidden className="hint-fireworks absolute">
         <div className="hint-landing-ring" />
-        {Array.from({ length: 12 }, (_, i) => <span key={i} style={{ "--ray": `${i * 30}deg` } as React.CSSProperties}>{i % 3 === 0 ? "⭐" : i % 3 === 1 ? "✨" : "🌟"}</span>)}
+        {Array.from({ length: 12 }, (_, i) => <span key={i} style={{ "--ray": `${i * 30}deg` } as CSSProperties}>{i % 3 === 0 ? "⭐" : i % 3 === 1 ? "✨" : "🌟"}</span>)}
       </div>
     </div>
   );
