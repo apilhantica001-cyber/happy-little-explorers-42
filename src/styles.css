@@ -229,7 +229,21 @@
   }
 }
 
+.hint-rocket { width: 72px; height: 90px; margin-left: -36px; margin-top: -45px; font-size: 64px; }
+.hint-rocket > span { display: block; transform: rotate(-45deg); }
+.hint-rocket > i { position: absolute; bottom: -16px; left: 8px; font-size: 32px; font-style: normal; }
+.hint-fireworks { width: 0; height: 0; }
+.hint-fireworks > span { position: absolute; font-size: 32px; animation: hint-rays 1.8s ease-out both; }
+.hint-landing-ring { position: absolute; width: 110px; height: 110px; left: -55px; top: -55px; border: 6px solid var(--joy-sun); border-radius: 50%; box-shadow: 0 0 0 12px var(--joy-bubble); animation: hint-ring 1.8s ease-out both; }
+@keyframes hint-rays {
+  0% { transform: rotate(var(--ray)) translateY(-8px) rotate(calc(-1 * var(--ray))) scale(.3); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: rotate(var(--ray)) translateY(-85px) rotate(calc(-1 * var(--ray))) scale(1); opacity: 0; }
+}
+@keyframes hint-ring { 0% { transform: scale(.5); opacity: 0; } 25% { opacity: .9; } 100% { transform: scale(1.3); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
+  .hint-fireworks > span { display: none; }
+  .hint-landing-ring { animation: none; opacity: .9; }
   *,
   *::before,
   *::after {
