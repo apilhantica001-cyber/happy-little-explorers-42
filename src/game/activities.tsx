@@ -222,7 +222,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
 
   const lock = useLock();
   const handle = (idx: number) => {
-    if (hit) return;
+    if (hit !== null) return;
     const isBig = board.bigFirst ? idx === 0 : idx === 1;
     if (isBig) {
       if (!lock.tryLock()) return;
@@ -258,6 +258,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
             <button
               key={idx}
               type="button"
+              data-answer-hint={wrong !== null && big && hit === null ? "true" : undefined}
               onClick={() => handle(idx)}
               className={[
                 "flex items-center justify-center rounded-4xl bg-card shadow-soft transition-transform active:scale-95",
@@ -388,6 +389,7 @@ function AssociationActivity({ onComplete }: ActivityProps) {
           <Tile
             key={o.id}
             onClick={() => handle(o)}
+            hint={wrong !== null && o.id === board.target.b.id && !hit}
             state={hit === o.id ? "happy" : wrong === o.id ? "wiggle" : "idle"}
           >
             {o.emoji}

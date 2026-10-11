@@ -4,7 +4,7 @@ Usage: bun ./scripts/voice-phrases.ts > /tmp/phrases.json && python3 scripts/gen
 Existing files are skipped, so any file can be replaced by a real human recording
 with the same name and the game will use it automatically.
 """
-import json, os, re, subprocess, sys, tempfile, unicodedata, urllib.request
+import json, os, re, subprocess, sys, tempfile, unicodedata, requests
 from concurrent.futures import ThreadPoolExecutor
 
 MODEL = "google/gemini-3.1-flash-tts-preview"
@@ -29,17 +29,21 @@ def key(t):
 def synth(text, style, out):
     if os.path.exists(out):
         return True
+    spoken = {"2": "Dois!", "3": "Três!"}.get(text, text)
     body = {
         "model": MODEL,
-        "contents": [{"role": "user", "parts": [{"text": f"{style}: {text}"}]}],
+        "contents": [{"role": "user", "parts": [{"text": f"{style}. Diga apenas a fala a seguir, com clareza e uma pequena pausa ao final: {spoken}"}]}],
         "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}}},
     }
-    req = urllib.request.Request(URL, json.dumps(body).encode(), {"Authorization": "Bearer " + os.environ["LOVABLE_API_KEY"], "Content-Type": "application/json"})
     import time
-    for i in range(6):
+    for i in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=120) as r:
-                wav = r.read()
+            r = requests.post(URL, json=body, headers={"Authorization": "Bearer " + os.environ["LOVABLE_API_KEY"]}, timeout=120)
+            if r.status_code == 402:
+                print("Voice generation credits unavailable", flush=True)
+                return False
+            r.raise_for_status()
+            wav = r.content
             with tempfile.NamedTemporaryFile(suffix=".wav") as f:
                 f.write(wav); f.flush()
                 # trim silence, normalize loudness, small mp3
@@ -54,12 +58,15 @@ def synth(text, style, out):
 
 def main():
     phrases = json.load(open(sys.argv[1]))
+    m = json.load(open("src/game/voice-manifest.json"))
     jobs, manifest = [], {"pt": {}, "en": {}}
     for lang in ("pt", "en"):
         os.makedirs(f"public/audio/{lang}", exist_ok=True)
         for t in phrases[lang]:
             k = key(t)
             if not k or k in manifest[lang]:
+                continue
+            if m[lang].get(k):
                 continue
             n = VARIANTS if t in MULTI else 1
             files = []
@@ -71,10 +78,11 @@ def main():
     with ThreadPoolExecutor(1) as ex:
         ok = list(ex.map(lambda j: synth(*j), jobs))
     print("done", sum(ok), "/", len(ok), flush=True)
-    m = json.load(open("src/game/voice-manifest.json"))
     for lang in ("pt", "en"):
-        m[lang] = {k: [f for f in v if os.path.exists("public" + f)] for k, v in manifest[lang].items()}
-        m[lang] = {k: v for k, v in m[lang].items() if v}
+        for k, v in manifest[lang].items():
+            available = [f for f in v if os.path.exists("public" + f)]
+            if available:
+                m[lang][k] = available
     json.dump(m, open("src/game/voice-manifest.json", "w"), ensure_ascii=False, indent=1)
 
 
