@@ -1,8 +1,9 @@
 import { useSyncExternalStore, type ReactNode, type SyntheticEvent } from "react";
 import { isNarrating, subscribeNarration } from "./audio";
 import { RocketGuide } from "./rocket-guide";
+import { HintControl } from "./hints";
 
-export function Stage({ children }: { children: ReactNode }) {
+export function Stage({ children, hints = false }: { children: ReactNode; hints?: boolean }) {
   const busy = useSyncExternalStore(subscribeNarration, isNarrating, () => false);
   const guard = (event: SyntheticEvent) => {
     if (!isNarrating()) return;
@@ -14,6 +15,7 @@ export function Stage({ children }: { children: ReactNode }) {
   return (
     <main aria-busy={busy} onClickCapture={guard} onPointerDownCapture={guard} onPointerMoveCapture={guard} onKeyDownCapture={guard} className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
       {children}
+      {hints && <HintControl />}
       <RocketGuide />
     </main>
   );
@@ -44,17 +46,20 @@ export function Tile({
   bg,
   state,
   hint = false,
+  hintTarget = false,
 }: {
   onClick: () => void;
   children: ReactNode;
   bg?: string | undefined;
   state?: "idle" | "happy" | "wiggle" | "done" | undefined;
   hint?: boolean;
+  hintTarget?: boolean;
 }) {
   return (
     <button
       type="button"
       data-answer-hint={hint && state !== "happy" ? "true" : undefined}
+      data-hint-target={hintTarget || (hint && state !== "happy") ? "true" : undefined}
       onClick={onClick}
       style={bg ? { background: bg } : {}}
       className={[
