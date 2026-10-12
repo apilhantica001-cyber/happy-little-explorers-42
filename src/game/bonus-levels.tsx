@@ -15,7 +15,7 @@ const EN_FRUITS: Item[] = [
 export const ENGLISH_POOLS = [
   { id: "en-find-animals", icon: "🐶", pool: EN_ANIMALS },
   { id: "en-find-objects", icon: "⚽", pool: EN_OBJECTS },
-  { id: "en-find-colors", icon: "🎨", pool: COLORS.slice(0, 4).map((c) => ({ ...c, en: COLOR_EN[c.id] })) },
+  { id: "en-find-colors", icon: "🎨", pool: COLORS.slice(0, 4).map((c) => ({ ...c, en: COLOR_EN[c.id] ?? c.label })) },
   { id: "en-find-fruits", icon: "🍎", pool: EN_FRUITS },
   { id: "en-find-transport", icon: "🚂", pool: TRANSPORT },
   { id: "en-find-toys", icon: "🧸", pool: TOYS },
