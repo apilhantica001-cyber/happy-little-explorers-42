@@ -276,7 +276,7 @@ function Game() {
   }
 
   return (
-    <Stage hints>
+    <Stage hints hintKey={key}>
       {audioControls}
       <div className="flex w-full max-w-md items-center justify-center gap-2">
         {order.map((a, i) => (

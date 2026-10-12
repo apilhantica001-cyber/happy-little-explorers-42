@@ -3,7 +3,7 @@ import { isNarrating, subscribeNarration } from "./audio";
 import { RocketGuide } from "./rocket-guide";
 import { HintControl } from "./hints";
 
-export function Stage({ children, hints = false }: { children: ReactNode; hints?: boolean }) {
+export function Stage({ children, hints = false, hintKey }: { children: ReactNode; hints?: boolean; hintKey?: string }) {
   const busy = useSyncExternalStore(subscribeNarration, isNarrating, () => false);
   const guard = (event: SyntheticEvent) => {
     if (!isNarrating()) return;
@@ -15,7 +15,7 @@ export function Stage({ children, hints = false }: { children: ReactNode; hints?
   return (
     <main aria-busy={busy} onClickCapture={guard} onPointerDownCapture={guard} onPointerMoveCapture={guard} onKeyDownCapture={guard} className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
       {children}
-      {hints && <HintControl />}
+      {hints && <HintControl key={hintKey} />}
       <RocketGuide />
     </main>
   );

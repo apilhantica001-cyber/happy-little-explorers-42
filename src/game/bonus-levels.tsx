@@ -54,7 +54,7 @@ export const BONUS_DRAG: DragLevel[] = [
   { id: "d-en-ball", icon: "⚽", make: () => ({ say: "", en: "Ball", prompt: ["⚽", "🧺"], pieces: [0, 1, 2].map(() => ({ key: "ball", emoji: "⚽" })), targets: [{ key: "ball", emoji: "🧺", x: .5, y: .76, big: true }] }) },
   { id: "d-en-apple", icon: "🍎", make: () => ({ say: "", en: "Apple", prompt: ["🍎", "🌳"], pieces: [0, 1, 2].map(() => ({ key: "apple", emoji: "🍎" })), targets: [{ key: "apple", emoji: "🌳", x: .5, y: .76, big: true }] }) },
   { id: "d-en-train", icon: "🚂", make: () => ({ say: "", en: "Train", prompt: ["🚂", "🚉"], pieces: [{ key: "train", emoji: "🚂" }], targets: [{ key: "train", emoji: "🚉", x: .5, y: .76, big: true, move: .15 }] }) },
-  { id: "d-borboletas", icon: "🦋", make: () => ({ say: "Leve a abelhinha até a flor!", prompt: ["🐝", "🌷"], pieces: [{ key: "flower", emoji: "🐝" }, { key: "flower", emoji: "🦋" }], targets: [{ key: "flower", emoji: "🌷", x: .5, y: .72, big: true, move: .12 }] }) },
+  { id: "d-borboletas", icon: "🦋", make: () => ({ say: "Olha!", prompt: ["🐝", "🌷"], pieces: [{ key: "flower", emoji: "🐝" }, { key: "flower", emoji: "🦋" }], targets: [{ key: "flower", emoji: "🌷", x: .5, y: .72, big: true, move: .12 }] }) },
   { id: "d-ursinho-balanco", icon: "🧸", make: () => ({ say: "Guarde os brinquedos na caixa!", prompt: ["🧸", "📦"], pieces: [{ key: "toy", emoji: "🧸" }, { key: "toy", emoji: "🪀" }], targets: [{ key: "toy", emoji: "📦", x: .5, y: .76, big: true, move: .12 }] }) },
   { id: "d-pizza-flutuante", icon: "🍕", make: () => ({ say: "Vamos fazer uma pizza!", prompt: ["🧀", "🍕"], pieces: ["🧀", "🍅", "🍄"].map((emoji) => ({ emoji, key: "pizza" })), targets: [{ key: "pizza", emoji: "🍕", x: .5, y: .76, big: true, move: .1 }] }) },
 ];
