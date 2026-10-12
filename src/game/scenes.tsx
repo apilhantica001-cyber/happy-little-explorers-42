@@ -77,6 +77,7 @@ export function SceneSeekActivity({ onComplete, round }: ActivityProps) {
             key={`${r}-${i}`}
             type="button"
             onPointerDown={() => tap(i)}
+            data-hint-target={i === setup.hideAt && !found ? "true" : undefined}
             className={[
               "relative flex aspect-square items-center justify-center text-[clamp(4rem,20vw,6rem)]",
               peek === i ? "animate-wiggle" : "",
@@ -131,6 +132,8 @@ export function SortActivity({ onComplete }: ActivityProps) {
         {Object.entries(bins).map(([k, b]) => (
           <div
             key={k}
+            data-hint-slot={k}
+            data-hint-target="true"
             className="absolute flex items-center justify-center rounded-full bg-card/70 text-[5rem] shadow-soft"
             style={{ left: b.x - 70, top: b.y - 70, width: 140, height: 140 }}
           >
@@ -143,6 +146,7 @@ export function SortActivity({ onComplete }: ActivityProps) {
             <DragTarget
               key={it.id}
               emoji={it.emoji ?? "⭐"}
+              hintKey={it.kind}
               size={size}
               home={home}
               containerRef={ref}
@@ -233,6 +237,7 @@ export function KidsPlayActivity({ onComplete }: ActivityProps) {
           key={bounce}
           type="button"
           onPointerDown={tap}
+          data-hint-target={hits < GOAL ? "true" : undefined}
           aria-label={setup.play.say}
           className={[
             "absolute left-1/2 flex h-40 w-40 -translate-x-1/2 items-center justify-center text-[6rem]",
@@ -323,6 +328,7 @@ export function ExploreSceneActivity({ onComplete, round }: ActivityProps) {
           key={`${i}-${touched[i] ?? 0}`}
           type="button"
           onPointerDown={() => tap(i, t)}
+          data-hint-target={!touched[i] ? "true" : undefined}
           aria-label={t.e}
           className={[
             "absolute flex h-32 w-32 items-center justify-center text-[clamp(4rem,18vw,5.5rem)]",

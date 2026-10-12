@@ -78,6 +78,7 @@ export function BalloonActivity({ onComplete, round }: ActivityProps) {
               key={b.key}
               type="button"
               onPointerDown={() => handle(b)}
+              data-hint-target="true"
               aria-label={`balão ${b.label}`}
               className={`animate-float absolute flex h-28 w-24 items-start justify-center p-1 ${
                 level > 0 ? "ring-0" : ""
@@ -154,6 +155,7 @@ export function BubbleSwipeActivity({ onComplete }: ActivityProps) {
             <span
               key={b.key}
               className="animate-float pointer-events-none absolute h-24 w-24 rounded-full border-4 border-card bg-card/30 shadow-soft"
+              data-hint-target="true"
               style={{ left: b.x * box.w - 48, top: b.y * box.h - 48, animationDelay: `${b.delay}s` }}
             />
           ),
@@ -225,6 +227,7 @@ export function GuideActivity({
         className="relative h-[58dvh] w-full max-w-md rounded-4xl bg-card/25"
       >
         <div
+          data-hint-target={!won ? "true" : undefined}
           className={`absolute flex h-28 w-28 items-center justify-center rounded-full bg-card/70 text-[4rem] shadow-soft ${
             level > 0 ? "animate-bob ring-4 ring-primary/40" : ""
           }`}
@@ -234,6 +237,7 @@ export function GuideActivity({
         </div>
         <div
           className={`pointer-events-none absolute text-[4.5rem] ${won ? "animate-pop" : "animate-bob"}`}
+          data-hint-source={!won ? "true" : undefined}
           style={{ left: pos.x - 40, top: pos.y - 40 }}
         >
           {mover}
@@ -269,6 +273,7 @@ export function DragHomeActivity({
       </Prompt>
       <div ref={ref} className="relative h-[58dvh] w-full max-w-md">
         <div
+          data-hint-target="true"
           className="absolute flex h-40 w-40 items-center justify-center rounded-4xl bg-card/70 text-[5rem] shadow-soft"
           style={{ left: target.x - 80, top: target.y - 80 }}
         >
@@ -378,6 +383,7 @@ export function FootprintsActivity({ onComplete }: ActivityProps) {
         {points.slice(0, steps - 1).map((p, i) => (
           <span
             key={i}
+            data-hint-target={i === reached ? "true" : undefined}
             className={`pointer-events-none absolute flex h-20 w-20 items-center justify-center text-5xl transition-opacity ${
               i < reached ? "opacity-25" : i === reached ? (level > 0 ? "animate-bob" : "animate-pulse") : "opacity-60"
             }`}
@@ -391,6 +397,7 @@ export function FootprintsActivity({ onComplete }: ActivityProps) {
             className={`pointer-events-none absolute flex h-28 w-28 items-center justify-center rounded-full bg-card/70 text-[4rem] shadow-soft ${
               reached >= steps ? "animate-pop" : ""
             }`}
+            data-hint-target={reached === steps - 1 ? "true" : undefined}
             style={{ left: last.x - 56, top: last.y - 56 }}
           >
             {reached >= steps ? animal?.emoji : "🌳"}
@@ -457,6 +464,7 @@ export function FindActivity({ onComplete, round }: ActivityProps) {
           <Tile
             key={`${roundIdx}-${i}`}
             onClick={() => handle(i)}
+            hintTarget={i === board.at && !found}
             hint={level > 0 && i === board.at && !found}
             state={found && i === board.at ? "happy" : peek.includes(i) ? "wiggle" : "idle"}
           >
@@ -530,6 +538,7 @@ export function ColorObjectActivity({ onComplete, round }: ActivityProps) {
           <Tile
             key={o.color.id}
             onClick={() => handle(o)}
+            hintTarget={o.color.id === board.target.color.id && !hit}
             hint={(level > 0 || help) && o.color.id === board.target.color.id && !hit}
             state={hit === o.color.id ? "happy" : wrong === o.color.id ? "wiggle" : "idle"}
           >
@@ -597,6 +606,7 @@ export function EnglishWordsActivity({ onComplete, pool }: ActivityProps & { poo
         key={idx}
         type="button"
         onClick={handle}
+        data-hint-target={!tapped ? "true" : undefined}
         style={item.bg ? { background: item.bg } : {}}
         className={[
           "flex h-64 w-64 items-center justify-center rounded-full text-[9rem] shadow-soft transition-transform active:scale-95",
@@ -660,6 +670,7 @@ export function EnglishNumbersActivity({ onComplete }: ActivityProps) {
             key={`${n}-${i}`}
             type="button"
             onClick={() => handle(i)}
+            data-hint-target={!tapped.includes(i) ? "true" : undefined}
             className={[
               "flex h-32 w-32 items-center justify-center rounded-4xl bg-card text-[4rem] shadow-soft transition-transform active:scale-95",
               tapped.includes(i) ? "animate-pop opacity-60" : "animate-bob",

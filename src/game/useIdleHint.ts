@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { HINT_EVENT } from "./hints";
 
 /** Returns a hint level (0 = none, 1 = discreet hint, 2 = stronger help) that
  * grows while the child does not interact, and a poke() to reset it. */
@@ -22,6 +23,12 @@ export function useIdleHint(resetKey: unknown, firstDelay = 5000, secondDelay = 
     schedule();
     return clear;
   }, [schedule, resetKey]);
+
+  useEffect(() => {
+    const help = () => { clear(); setLevel(2); };
+    window.addEventListener(HINT_EVENT, help);
+    return () => window.removeEventListener(HINT_EVENT, help);
+  }, []);
 
   return { level, poke: schedule };
 }

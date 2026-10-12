@@ -40,6 +40,8 @@ export function DragTarget({
   hint,
   placed,
   size = 96,
+  hintKey,
+  hintDestination,
 }: {
   emoji: string;
   home: Pos;
@@ -48,6 +50,8 @@ export function DragTarget({
   hint?: boolean;
   placed?: Pos | null;
   size?: number;
+  hintKey?: string;
+  hintDestination?: Pos;
 }) {
   const [pos, setPos] = useState<Pos>(home);
   const [dragging, setDragging] = useState(false);
@@ -65,6 +69,9 @@ export function DragTarget({
   return (
     <button
       type="button"
+      data-hint-source={!placed ? "true" : undefined}
+      data-hint-key={hintKey}
+      data-hint-destination={hintDestination ? `${hintDestination.x},${hintDestination.y}` : undefined}
       onPointerDown={(e) => {
         if (placed) return;
         (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -128,6 +135,7 @@ export function BasketActivity({ onComplete }: ActivityProps) {
       </Prompt>
       <div ref={ref} className="relative h-[58dvh] w-full max-w-md">
         <div
+          data-hint-target="true"
           className="absolute flex h-40 w-40 items-center justify-center rounded-4xl bg-card/70 text-[5rem] shadow-soft"
           style={{ left: basket.x - 80, top: basket.y - 80 }}
         >
@@ -201,6 +209,8 @@ export function ShapeFitActivity({ onComplete }: ActivityProps) {
           return (
             <div
               key={s.id}
+              data-hint-slot={s.id}
+              data-hint-target={!placed.includes(s.id) ? "true" : undefined}
               style={{ left: p.x - 55, top: p.y - 55 }}
               className="absolute flex h-28 w-28 items-center justify-center rounded-4xl border-4 border-dashed border-card bg-card/30 text-[3rem] opacity-60"
             >
@@ -215,6 +225,7 @@ export function ShapeFitActivity({ onComplete }: ActivityProps) {
             <DragTarget
               key={item.id}
               emoji={item.emoji!}
+              hintKey={item.id}
               home={{ x: 16 + i * ((box.w - 120) / 2), y: box.h - 130 }}
               containerRef={ref}
               hint={level > 0 && !placed.includes(item.id)}
@@ -302,6 +313,7 @@ export function SwipeStarActivity({ onComplete }: ActivityProps) {
         className="relative h-[58dvh] w-full max-w-md rounded-4xl bg-card/25"
       >
         <div
+          data-hint-target={!won ? "true" : undefined}
           className={`absolute flex h-28 w-28 items-center justify-center rounded-full bg-card/70 text-[4rem] shadow-soft ${
             level > 0 ? "animate-bob" : ""
           }`}
@@ -310,6 +322,7 @@ export function SwipeStarActivity({ onComplete }: ActivityProps) {
           {goal.emoji}
         </div>
         <div
+          data-hint-source={!won ? "true" : undefined}
           className={`pointer-events-none absolute text-[4.5rem] transition-transform ${
             won ? "animate-pop" : "animate-bob"
           }`}
@@ -366,6 +379,7 @@ export function SurpriseBoxActivity({ onComplete }: ActivityProps) {
             <button
               key={b.key}
               type="button"
+              data-hint-target={!isOpen ? "true" : undefined}
               onClick={() => handle(b)}
               className={[
                 "flex h-36 w-36 items-center justify-center rounded-4xl bg-card text-[4.5rem] shadow-soft transition-transform active:scale-95",
@@ -435,6 +449,7 @@ export function CurtainActivity({ onComplete }: ActivityProps) {
         ref={ref}
         onPointerMove={move}
         onPointerDown={move}
+        data-hint-swipe={!done ? "true" : undefined}
         style={{ touchAction: "none" }}
         className="relative h-[48dvh] w-full max-w-md overflow-hidden rounded-4xl bg-card/60 shadow-soft"
       >
