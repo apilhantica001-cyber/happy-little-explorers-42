@@ -33,8 +33,8 @@ export function HintControl() {
       const stage = hand.current?.closest(".game-stage");
       let target = stage?.querySelector<HTMLElement>('[data-hint-target="true"]');
       let source = stage?.querySelector<HTMLElement>('[data-hint-source="true"]');
-      const key = source?.dataset.hintKey;
-      if (key && stage) target = [...stage.querySelectorAll<HTMLElement>('[data-hint-target="true"]')].find((el) => el.dataset.hintSlot === key) ?? target;
+      const key = source?.dataset['hintKey'];
+      if (key && stage) target = [...stage.querySelectorAll<HTMLElement>('[data-hint-target="true"]')].find((el) => el.dataset['hintSlot'] === key) ?? target;
       const swipe = stage?.querySelector<HTMLElement>('[data-hint-swipe="true"]');
       if (swipe) { target = swipe; source = swipe; }
       if (!target || !hand.current) { setRunning(false); return; }

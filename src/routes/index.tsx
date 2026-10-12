@@ -288,7 +288,7 @@ function Game() {
           />
         ))}
       </div>
-      <div key={key} className="flex w-full flex-col items-center gap-6">
+      <div key={key} data-activity={activity?.id} className="flex w-full flex-col items-center gap-6">
         {activity?.render({ onComplete: handleComplete, round })}
       </div>
       {transitioning && <div className="fixed inset-0 z-30" aria-hidden />}

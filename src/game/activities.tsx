@@ -32,6 +32,7 @@ import {
 import { EN_ANIMALS, EN_OBJECTS, TOYS } from "./data";
 import { DRAG_LEVELS, DragLevelActivity } from "./drag-levels";
 import { TAP_LEVELS, TapLevelActivity } from "./tap-levels";
+import { BONUS_DRAG, BONUS_TAP, ENGLISH_POOLS, EnglishFindActivity } from "./bonus-levels";
 import {
   BalloonActivity,
   BubbleSwipeActivity,
@@ -633,12 +634,13 @@ export const ACTIVITIES: Activity[] = [
   { id: "no-lugar", icon: "🧺", render: (p) => <SortActivity {...p} /> },
   { id: "criancas", icon: "🧒", render: (p) => <KidsPlayActivity {...p} /> },
   { id: "explorar", icon: "🌳", render: (p) => <ExploreSceneActivity {...p} /> },
-  ...DRAG_LEVELS.map((lv) => ({
+  ...ENGLISH_POOLS.map((lv) => ({ id: lv.id, icon: lv.icon, render: (p: ActivityProps) => <EnglishFindActivity {...p} pool={lv.pool} /> })),
+  ...[...DRAG_LEVELS, ...BONUS_DRAG].map((lv) => ({
     id: lv.id,
     icon: lv.icon,
     render: (p: ActivityProps) => <DragLevelActivity {...p} level={lv} />,
   })),
-  ...TAP_LEVELS.map((lv) => ({
+  ...[...TAP_LEVELS, ...BONUS_TAP].map((lv) => ({
     id: lv.id,
     icon: lv.icon,
     render: (p: ActivityProps) => <TapLevelActivity {...p} level={lv} />,
@@ -655,6 +657,7 @@ export const DRAG_IDS = new Set<string>([
   "estrela",
   "bolhas",
   ...DRAG_LEVELS.map((l) => l.id),
+  ...BONUS_DRAG.map((l) => l.id),
 ]);
 export const EASY_DRAG_IDS = ["d-osso", "d-lixeira", "d-dormir", "d-banho", "d-flores", "d-ovos"];
 
