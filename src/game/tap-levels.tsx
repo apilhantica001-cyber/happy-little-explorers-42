@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Prompt } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { playAnimalSound, sounds, speak } from "./audio";
+import { playAnimalSound, sounds, speak, speakEn } from "./audio";
 import { useIdleHint } from "./useIdleHint";
 import type { ActivityProps } from "./interactions";
 
 /** "Tap each thing to transform it" engine: eggs hatch, seeds grow, corn pops... */
-type Setup = { say: string; from: string; to: string[]; n: number; animal?: string; bg?: string };
-type Level = { id: string; icon: string; make: (round: number) => Setup };
+type Setup = { say: string; from: string; to: string[]; n: number; animal?: string; bg?: string; en?: string };
+export type TapLevel = { id: string; icon: string; make: (round: number) => Setup };
 
-export const TAP_LEVELS: Level[] = [
+export const TAP_LEVELS: TapLevel[] = [
   { id: "t-ovos", icon: "🐣", make: (r) => ({ say: "Toque nos ovinhos para nascer os pintinhos!", from: "🥚", to: ["🐣", "🐥"], n: r ? 4 : 3, animal: "galinha" }) },
   { id: "t-sementes", icon: "🌱", make: (r) => ({ say: "Toque nas plantinhas para crescer as flores!", from: "🌱", to: ["🌻", "🌷", "🌼", "🌹"], n: r ? 4 : 3, bg: "oklch(0.88 0.1 140)" }) },
   { id: "t-pipoca", icon: "🍿", make: () => ({ say: "Vamos fazer pipoca! Toque no milho!", from: "🌽", to: ["🍿"], n: 4 }) },
@@ -20,23 +20,27 @@ export const TAP_LEVELS: Level[] = [
   { id: "t-luzes", icon: "💡", make: (r) => ({ say: "Acenda as luzes!", from: "🌑", to: ["🌕"], n: r ? 4 : 3, bg: "oklch(0.3 0.05 260)" }) },
 ];
 
-export function TapLevelActivity({ onComplete, round, level: def }: ActivityProps & { level: Level }) {
+export function TapLevelActivity({ onComplete, round, level: def }: ActivityProps & { level: TapLevel }) {
   const s = useMemo(() => def.make(round), [def, round]);
   const [done, setDone] = useState<Record<number, string>>({});
   const finished = useRef(false);
+  const doneRef = useRef<Record<number, string>>({});
   const { level, poke } = useIdleHint(Object.keys(done).length);
 
   useEffect(() => {
-    void speak(s.say);
+    if (s.en) void speakEn(s.en);
+    else void speak(s.say);
   }, [s]);
 
   const tap = (i: number) => {
     poke();
-    if (done[i] || finished.current) return;
-    const to = s.to[Object.keys(done).length % s.to.length] ?? s.from;
-    const next = { ...done, [i]: to };
+    if (doneRef.current[i] || finished.current) return;
+    const to = s.to[Object.keys(doneRef.current).length % s.to.length] ?? s.from;
+    const next = { ...doneRef.current, [i]: to };
+    doneRef.current = next;
     setDone(next);
     sounds.pop();
+    if (s.en) void speakEn(s.en);
     const n = Object.keys(next).length;
     if (s.animal && n === 1) void playAnimalSound(s.animal);
     if (n === s.n) {

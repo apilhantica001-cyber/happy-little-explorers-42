@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Prompt } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { playAnimalSound, sounds, speak } from "./audio";
+import { playAnimalSound, sounds, speak, speakEn } from "./audio";
 import { useIdleHint } from "./useIdleHint";
 import { DragTarget, useBox, type ActivityProps } from "./interactions";
 
@@ -31,9 +31,10 @@ type Setup = {
   ordered?: boolean; // slots must be filled in array order
   count?: boolean; // narrator counts 1,2,3
   radius?: number;
+  en?: string;
 };
 
-type Level = { id: string; icon: string; make: (round: number) => Setup };
+export type DragLevel = { id: string; icon: string; make: (round: number) => Setup };
 
 const shadowSlots = (pieces: Pc[], y = 0.72): Tgt[] =>
   shuffle(pieces).map((p, i, a) => ({
@@ -45,7 +46,7 @@ const shadowSlots = (pieces: Pc[], y = 0.72): Tgt[] =>
     y,
   }));
 
-export const DRAG_LEVELS: Level[] = [
+export const DRAG_LEVELS: DragLevel[] = [
   {
     id: "d-osso",
     icon: "🦴",
@@ -354,7 +355,7 @@ export const DRAG_LEVELS: Level[] = [
   },
 ];
 
-export function DragLevelActivity({ onComplete, round, level: def }: ActivityProps & { level: Level }) {
+export function DragLevelActivity({ onComplete, round, level: def }: ActivityProps & { level: DragLevel }) {
   const { ref, box } = useBox();
   const setup = useMemo(() => def.make(round), [def, round]);
   const [placed, setPlaced] = useState<Record<number, number>>({}); // piece idx -> target idx
@@ -368,7 +369,8 @@ export function DragLevelActivity({ onComplete, round, level: def }: ActivityPro
   const size = Math.min(84, box.w / (setup.pieces.length + 0.8));
 
   useEffect(() => {
-    void speak(setup.say);
+    if (setup.en) void speakEn(setup.en);
+    else void speak(setup.say);
   }, [setup]);
 
   useEffect(() => {

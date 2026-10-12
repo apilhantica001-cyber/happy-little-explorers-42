@@ -12,10 +12,13 @@ export function HintControl() {
   const animations = useRef<Animation[]>([]);
   const timer = useRef<number | undefined>(undefined);
   const lastRequest = useRef(0);
+  const highlighted = useRef<HTMLElement | null>(null);
   const clear = () => {
     animations.current.forEach((a) => a.cancel());
     animations.current = [];
     window.clearTimeout(timer.current);
+    highlighted.current?.classList.remove("manual-hint-target");
+    highlighted.current = null;
     if (hand.current) hand.current.hidden = true;
   };
   useEffect(() => clear, []);
@@ -28,15 +31,20 @@ export function HintControl() {
     // Let every activity render its strongest hint before measuring it.
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const stage = hand.current?.closest(".game-stage");
-      const target = stage?.querySelector<HTMLElement>('[data-hint-target="true"]');
-      const source = stage?.querySelector<HTMLElement>('[data-hint-source="true"]');
+      let target = stage?.querySelector<HTMLElement>('[data-hint-target="true"]');
+      let source = stage?.querySelector<HTMLElement>('[data-hint-source="true"]');
+      const key = source?.dataset.hintKey;
+      if (key && stage) target = [...stage.querySelectorAll<HTMLElement>('[data-hint-target="true"]')].find((el) => el.dataset.hintSlot === key) ?? target;
+      const swipe = stage?.querySelector<HTMLElement>('[data-hint-swipe="true"]');
+      if (swipe) { target = swipe; source = swipe; }
       if (!target || !hand.current) { setRunning(false); return; }
       const center = (el: HTMLElement) => {
         const r = el.getBoundingClientRect();
         return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
       };
       const end = center(target);
-      const start = source ? center(source) : end;
+      const start = source ? center(source) : { ...end };
+      if (swipe) { const r = swipe.getBoundingClientRect(); start.x = r.left + r.width * .12; end.x = r.left + r.width * .85; }
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const frames = source ? [
         { transform: `translate(${start.x}px, ${start.y}px) scale(1)`, opacity: 1, offset: 0 },
@@ -55,6 +63,7 @@ export function HintControl() {
       animations.current.push(demo);
       const highlight = target.animate([{ outlineOffset: "4px", opacity: 1 }, { outlineOffset: "12px", opacity: .7 }, { outlineOffset: "4px", opacity: 1 }], { duration: 1200, iterations: reduced ? 1 : 3 });
       target.classList.add("manual-hint-target");
+      highlighted.current = target;
       animations.current.push(highlight);
       timer.current = window.setTimeout(() => { target.classList.remove("manual-hint-target"); clear(); setRunning(false); }, 4500);
     }));

@@ -227,8 +227,8 @@ export function GuideActivity({
         className="relative h-[58dvh] w-full max-w-md rounded-4xl bg-card/25"
       >
         <div
+          data-hint-target={!won ? "true" : undefined}
           className={`absolute flex h-28 w-28 items-center justify-center rounded-full bg-card/70 text-[4rem] shadow-soft ${
-          
             level > 0 ? "animate-bob ring-4 ring-primary/40" : ""
           }`}
           style={{ left: goalPos.x - 56, top: goalPos.y - 56 }}
@@ -606,6 +606,7 @@ export function EnglishWordsActivity({ onComplete, pool }: ActivityProps & { poo
         key={idx}
         type="button"
         onClick={handle}
+        data-hint-target={!tapped ? "true" : undefined}
         style={item.bg ? { background: item.bg } : {}}
         className={[
           "flex h-64 w-64 items-center justify-center rounded-full text-[9rem] shadow-soft transition-transform active:scale-95",
@@ -669,6 +670,7 @@ export function EnglishNumbersActivity({ onComplete }: ActivityProps) {
             key={`${n}-${i}`}
             type="button"
             onClick={() => handle(i)}
+            data-hint-target={!tapped.includes(i) ? "true" : undefined}
             className={[
               "flex h-32 w-32 items-center justify-center rounded-4xl bg-card text-[4rem] shadow-soft transition-transform active:scale-95",
               tapped.includes(i) ? "animate-pop opacity-60" : "animate-bob",
