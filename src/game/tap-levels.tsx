@@ -61,6 +61,7 @@ export function TapLevelActivity({ onComplete, round, level: def }: ActivityProp
           <button
             key={i}
             type="button"
+            data-hint-target={!done[i] ? "true" : undefined}
             onPointerDown={() => tap(i)}
             aria-label={s.from}
             className={[

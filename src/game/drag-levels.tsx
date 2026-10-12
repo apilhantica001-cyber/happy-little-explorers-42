@@ -449,6 +449,8 @@ export function DragLevelActivity({ onComplete, round, level: def }: ActivityPro
           return (
             <div
               key={ti}
+              data-hint-slot={tg.key}
+              data-hint-target={!occupied && setup.pieces.some((p, pi) => p.key === tg.key && placed[pi] === undefined) ? "true" : undefined}
               className={[
                 "pointer-events-none absolute flex items-center justify-center rounded-full",
                 tg.slot ? "" : "bg-card/70 shadow-soft",
@@ -496,6 +498,7 @@ export function DragLevelActivity({ onComplete, round, level: def }: ActivityPro
             <DragTarget
               key={pi}
               emoji={p.emoji}
+              hintKey={p.key}
               size={size}
               home={homes[pi] ?? { x: 0, y: 0 }}
               containerRef={ref}

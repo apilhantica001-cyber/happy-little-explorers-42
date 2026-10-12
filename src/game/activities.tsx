@@ -134,6 +134,7 @@ function PickActivity({
           <Tile
             key={o.id}
             bg={o.bg}
+            hintTarget={o.id === board.target.id && !hit}
             onClick={() => handle(o)}
             hint={(level > 0 || help) && o.id === board.target.id && !hit}
             state={hit === o.id ? "happy" : wrong === o.id ? "wiggle" : "idle"}
@@ -192,6 +193,7 @@ function ExploreActivity({
           <Tile
             key={i.id}
             bg={i.bg}
+            hintTarget={!done.includes(i.id)}
             onClick={() => handle(i)}
             state={hit === i.id ? "happy" : done.includes(i.id) ? "done" : "idle"}
           >
@@ -259,6 +261,7 @@ function SizesActivity({ onComplete }: ActivityProps) {
               key={idx}
               type="button"
               data-answer-hint={wrong !== null && big && hit === null ? "true" : undefined}
+              data-hint-target={big && hit === null ? "true" : undefined}
               onClick={() => handle(idx)}
               className={[
                 "flex items-center justify-center rounded-4xl bg-card shadow-soft transition-transform active:scale-95",
@@ -323,6 +326,7 @@ function CountActivity({ onComplete }: ActivityProps) {
             key={idx}
             type="button"
             onClick={() => handle(idx)}
+            data-hint-target={!tapped.includes(idx) ? "true" : undefined}
             className={[
               "flex h-32 w-32 items-center justify-center rounded-4xl bg-card text-[4rem] shadow-soft transition-transform active:scale-95",
               tapped.includes(idx) ? "animate-pop opacity-60" : "",
@@ -389,6 +393,7 @@ function AssociationActivity({ onComplete }: ActivityProps) {
           <Tile
             key={o.id}
             onClick={() => handle(o)}
+            hintTarget={o.id === board.target.b.id && !hit}
             hint={wrong !== null && o.id === board.target.b.id && !hit}
             state={hit === o.id ? "happy" : wrong === o.id ? "wiggle" : "idle"}
           >
@@ -470,6 +475,7 @@ function MemoryActivity({ onComplete }: ActivityProps) {
             <Tile
               key={c.key}
               onClick={() => flip(c)}
+              hintTarget={!found.includes(c.id) && !open.includes(c.key) && (open.length === 0 || board.cards.find((x) => x.key === open[0])?.id === c.id)}
               bg={shown ? "" : "var(--gradient-card)"}
               state={found.includes(c.id) ? "happy" : "idle"}
             >
@@ -522,6 +528,7 @@ function PopActivity({ onComplete }: ActivityProps) {
             key={b.key}
             type="button"
             onClick={() => handle(b.key)}
+            data-hint-target="true"
             className="animate-float absolute flex h-24 w-24 items-center justify-center rounded-full bg-card/80 text-5xl shadow-soft active:scale-90"
             style={{ left: `${b.left}%`, top: `${b.top}%`, animationDelay: `${b.delay}s` }}
           >
