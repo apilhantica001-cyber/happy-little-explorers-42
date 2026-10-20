@@ -234,6 +234,10 @@
 .hint-rocket > i { position: absolute; bottom: -16px; left: 8px; font-size: 32px; font-style: normal; }
 .hint-fireworks { width: 0; height: 0; }
 .hint-hand { margin-left: -18px; margin-top: -14px; }
+.creative-hint { width: 90px; height: 90px; margin-left: -45px; margin-top: -45px; display: flex; align-items: center; justify-content: center; }
+.creative-hint[hidden] { display: none; }
+.hint-copy { opacity: .7; }
+.hint-reveal { width: 180px; margin-left: -90px; margin-top: -95px; white-space: nowrap; }
 .manual-hint-target { outline: 6px solid var(--joy-sun); outline-offset: 6px; }
 .hint-fireworks > span { position: absolute; font-size: 32px; animation: hint-rays 1.8s ease-out both; }
 .hint-landing-ring { position: absolute; width: 110px; height: 110px; left: -55px; top: -55px; border: 6px solid var(--joy-sun); border-radius: 50%; box-shadow: 0 0 0 12px var(--joy-bubble); animation: hint-ring 1.8s ease-out both; }
