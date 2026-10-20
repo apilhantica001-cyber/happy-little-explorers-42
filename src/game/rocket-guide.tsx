@@ -1,4 +1,5 @@
 import { useEffect, useRef, type CSSProperties } from "react";
+import { beginHint } from "./hint-state";
 
 /** One shared flight follows the real answer element, never a guessed position. */
 export function RocketGuide() {
@@ -10,11 +11,14 @@ export function RocketGuide() {
     let target: Element | null = null;
     let flight: Animation | undefined;
     let timer: number | undefined;
+    let release: (() => void) | undefined;
     const clear = () => {
       flight?.cancel();
       window.clearTimeout(timer);
       if (rocket.current) rocket.current.hidden = true;
       if (burst.current) burst.current.hidden = true;
+      release?.();
+      release = undefined;
     };
     const check = () => {
       const next = stage.querySelector('[data-answer-hint="true"]');
@@ -22,22 +26,24 @@ export function RocketGuide() {
       if (!next) { target = null; clear(); return; }
       target = next;
       clear();
+      release = beginHint();
+      if (!release) return;
       const ship = rocket.current;
       const fireworks = burst.current;
-      if (!ship || !fireworks) return;
+      if (!ship || !fireworks) { clear(); return; }
       const box = next.getBoundingClientRect();
       const x = box.left + box.width / 2;
       const y = box.top + box.height / 2;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const land = () => {
-        if (!next.isConnected || next.getAttribute("data-answer-hint") !== "true") return;
+        if (!next.isConnected || next.getAttribute("data-answer-hint") !== "true") { clear(); return; }
         const landed = next.getBoundingClientRect();
         ship.hidden = true;
         fireworks.style.left = `${landed.left + landed.width / 2}px`;
         fireworks.style.top = `${landed.top + landed.height / 2}px`;
         fireworks.hidden = false;
         fireworks.getAnimations({ subtree: true }).forEach((a) => { a.cancel(); a.play(); });
-        timer = window.setTimeout(() => { fireworks.hidden = true; }, 1800);
+        timer = window.setTimeout(clear, 1800);
       };
       if (reduced) { land(); return; }
       ship.hidden = false;

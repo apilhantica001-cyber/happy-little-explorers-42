@@ -2,18 +2,20 @@ import { useSyncExternalStore, type ReactNode, type SyntheticEvent } from "react
 import { isNarrating, subscribeNarration } from "./audio";
 import { RocketGuide } from "./rocket-guide";
 import { HintControl } from "./hints";
+import { isHintRunning, subscribeHint } from "./hint-state";
 
 export function Stage({ children, hints = false, hintKey }: { children: ReactNode; hints?: boolean; hintKey?: string }) {
   const busy = useSyncExternalStore(subscribeNarration, isNarrating, () => false);
+  const hintBusy = useSyncExternalStore(subscribeHint, isHintRunning, () => false);
   const guard = (event: SyntheticEvent) => {
-    if (!isNarrating()) return;
+    if (!isNarrating() && !isHintRunning()) return;
     const target = event.target;
     if (target instanceof Element && target.closest("[data-parent-controls]")) return;
     event.preventDefault();
     event.stopPropagation();
   };
   return (
-    <main aria-busy={busy} onClickCapture={guard} onPointerDownCapture={guard} onPointerMoveCapture={guard} onKeyDownCapture={guard} className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
+    <main aria-busy={busy || hintBusy} data-hint-running={hintBusy ? "true" : undefined} onClickCapture={guard} onPointerDownCapture={guard} onPointerMoveCapture={guard} onPointerUpCapture={guard} onKeyDownCapture={guard} className="game-stage flex h-[100dvh] w-full flex-col items-center justify-center gap-4 overflow-hidden px-4">
       {children}
       {hints && <HintControl key={hintKey} />}
       <RocketGuide />

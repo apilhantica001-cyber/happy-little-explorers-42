@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX } from "lucide-react";
+import { Download, Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX } from "lucide-react";
 import { ACTIVITIES, DRAG_IDS, EASY_DRAG_IDS, EASY_IDS } from "@/game/activities";
 import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
@@ -244,6 +244,20 @@ function Game() {
           ▶️
         </button>
         <p className="text-xl font-bold text-foreground/70">Toque para brincar</p>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button type="button" variant="secondary" className="h-12 bg-card/80 px-5 text-base shadow-soft">
+              <Download /> Baixar para Android
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-[calc(100%-2rem)] max-w-sm bg-card" overlayClassName="bg-foreground/45">
+            <DialogHeader>
+              <DialogTitle>Aplicativo Android</DialogTitle>
+              <DialogDescription>O APK ainda não está disponível para download. Você pode continuar jogando pelo site.</DialogDescription>
+            </DialogHeader>
+            <Button type="button" variant="secondary" disabled><Download /> APK indisponível</Button>
+          </DialogContent>
+        </Dialog>
       </Stage>
     );
   }
