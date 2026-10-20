@@ -83,7 +83,7 @@ export function HintControl() {
       flight.onfinish = () => {
         if (!target?.isConnected || !release.current) { clear(); setRunning(false); return; }
         const landing = center(target);
-        actor.style.transform = at(landing.x, landing.y);
+        actor.hidden = true;
         target.classList.add("manual-hint-target");
         highlighted.current = target;
         const flowers = burst.current;

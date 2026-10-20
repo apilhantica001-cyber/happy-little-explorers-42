@@ -19,6 +19,7 @@
 - Serialize narration centrally in the audio engine and guard child input at Stage capture phase using synchronous narration state; this prevents every activity from restarting speech while preserving parent controls.
 - Render one shared rocket guide in Stage and locate answers via `data-answer-hint`; measuring the real element keeps landings aligned across layouts.
 - All manual and automatic guidance acquires the shared synchronous hint lock until landing feedback ends; this prevents child input and overlapping demonstrations while preserving parent controls.
+- The Android download entry must state unavailability until a real signed APK is supplied and served from a same-origin app asset; never substitute a manifest, ZIP or browser installation for an APK.
 - Expose manual hints through Stage's light bulb and semantic source/target/slot attributes in each activity; matching slot keys demonstrate a correct drag without completing it for the child.
 - Extend the shared drag and tap engines for bonus levels and reuse recorded English words; this keeps new activities consistent with existing input protection and narration.
 - Generate only missing voice keys and preserve existing manifest entries; this avoids replacing approved recordings or losing variations.
