@@ -57,6 +57,10 @@ export const BONUS_DRAG: DragLevel[] = [
   { id: "d-borboletas", icon: "🦋", make: () => ({ say: "Olha!", prompt: ["🐝", "🌷"], pieces: [{ key: "flower", emoji: "🐝" }, { key: "flower", emoji: "🦋" }], targets: [{ key: "flower", emoji: "🌷", x: .5, y: .72, big: true, move: .12 }] }) },
   { id: "d-ursinho-balanco", icon: "🧸", make: () => ({ say: "Guarde os brinquedos na caixa!", prompt: ["🧸", "📦"], pieces: [{ key: "toy", emoji: "🧸" }, { key: "toy", emoji: "🪀" }], targets: [{ key: "toy", emoji: "📦", x: .5, y: .76, big: true, move: .12 }] }) },
   { id: "d-pizza-flutuante", icon: "🍕", make: () => ({ say: "Vamos fazer uma pizza!", prompt: ["🧀", "🍕"], pieces: ["🧀", "🍅", "🍄"].map((emoji) => ({ emoji, key: "pizza" })), targets: [{ key: "pizza", emoji: "🍕", x: .5, y: .76, big: true, move: .1 }] }) },
+  { id: "d-peixinho-aquario", icon: "🐠", make: () => ({ say: "Leve os peixinhos para o aquário!", prompt: ["🐠", "🐟"], pieces: [{ key: "fish", emoji: "🐠" }, { key: "fish", emoji: "🐟" }, { key: "fish", emoji: "🐡" }], targets: [{ key: "fish", emoji: "🫧", x: .5, y: .74, big: true, move: .08 }] }) },
+  { id: "d-passarinho-nuvem", icon: "🐦", make: () => ({ say: "Leve o passarinho até a nuvem!", prompt: ["🐦", "☁️"], pieces: [{ key: "bird", emoji: "🐦" }], targets: [{ key: "bird", emoji: "☁️", x: .5, y: .7, big: true, move: .18 }] }) },
+  { id: "d-sorvete-casquinha", icon: "🍦", make: () => ({ say: "Monte o sorvete!", prompt: ["🍓", "🍦"], pieces: [{ key: "ice", emoji: "🍓" }, { key: "ice", emoji: "🍫" }], targets: [{ key: "ice", emoji: "🍦", x: .5, y: .76, big: true }] }) },
+  { id: "d-en-fish", icon: "🐟", make: () => ({ say: "", en: "Fish", prompt: ["🐟", "🌊"], pieces: [0, 1, 2].map(() => ({ key: "fish", emoji: "🐟" })), targets: [{ key: "fish", emoji: "🌊", x: .5, y: .76, big: true, move: .1 }] }) },
 ];
 export const BONUS_TAP: TapLevel[] = [
   { id: "t-en-stars", icon: "⭐", make: () => ({ say: "", en: "Star", from: "✨", to: ["⭐", "🌟"], n: 3 }) },
@@ -64,4 +68,8 @@ export const BONUS_TAP: TapLevel[] = [
   { id: "t-patinho-festa", icon: "🦆", make: () => ({ say: "Olha o patinho!", from: "🥚", to: ["🦆", "🐥"], n: 3 }) },
   { id: "t-jardim-magico", icon: "🌈", make: () => ({ say: "Toque nas plantinhas para crescer as flores!", from: "🌱", to: ["🌷", "🍄", "🌈", "🌻"], n: 4 }) },
   { id: "t-festa-maluquinha", icon: "🤪", make: () => ({ say: "O que tem dentro? Toque para descobrir!", from: "🎩", to: ["🐸", "🪀", "🦄", "🍿"], n: 4 }) },
+  { id: "t-abobora", icon: "🎃", make: () => ({ say: "Toque nas abóboras para acender!", from: "🎃", to: ["🌟", "✨"], n: 3, bg: "oklch(0.32 0.06 280)" }) },
+  { id: "t-coco", icon: "🥥", make: () => ({ say: "Toque nos cocos para abrir!", from: "🥥", to: ["🌴", "🍹"], n: 3, bg: "oklch(0.88 0.09 90)" }) },
+  { id: "t-botoes", icon: "🔘", make: () => ({ say: "Aperte os botões coloridos!", from: "🔘", to: ["🔴", "🔵", "🟡", "🟢"], n: 4 }) },
+  { id: "t-en-balloon", icon: "🎈", make: () => ({ say: "", en: "Balloon", from: "🎈", to: ["💥", "🎉"], n: 4 }) },
 ];
