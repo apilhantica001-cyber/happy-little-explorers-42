@@ -68,4 +68,8 @@ export const BONUS_TAP: TapLevel[] = [
   { id: "t-patinho-festa", icon: "🦆", make: () => ({ say: "Olha o patinho!", from: "🥚", to: ["🦆", "🐥"], n: 3 }) },
   { id: "t-jardim-magico", icon: "🌈", make: () => ({ say: "Toque nas plantinhas para crescer as flores!", from: "🌱", to: ["🌷", "🍄", "🌈", "🌻"], n: 4 }) },
   { id: "t-festa-maluquinha", icon: "🤪", make: () => ({ say: "O que tem dentro? Toque para descobrir!", from: "🎩", to: ["🐸", "🪀", "🦄", "🍿"], n: 4 }) },
+  { id: "t-abobora", icon: "🎃", make: () => ({ say: "Toque nas abóboras para acender!", from: "🎃", to: ["🌟", "✨"], n: 3, bg: "oklch(0.32 0.06 280)" }) },
+  { id: "t-coco", icon: "🥥", make: () => ({ say: "Toque nos cocos para abrir!", from: "🥥", to: ["🌴", "🍹"], n: 3, bg: "oklch(0.88 0.09 90)" }) },
+  { id: "t-botoes", icon: "🔘", make: () => ({ say: "Aperte os botões coloridos!", from: "🔘", to: ["🔴", "🔵", "🟡", "🟢"], n: 4 }) },
+  { id: "t-en-balloon", icon: "🎈", make: () => ({ say: "", en: "Balloon", from: "🎈", to: ["💥", "🎉"], n: 4 }) },
 ];
