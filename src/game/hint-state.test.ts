@@ -19,8 +19,19 @@ describe("hint demonstration input lock", () => {
     finish?.();
     assert.equal(isHintRunning(), false);
   });
-  it("varies all five requested styles without immediate repetition", () => {
-    assert.deepEqual(Array.from({ length: 5 }, chooseHintStyle), ["rocket", "archery", "sunflower", "parachute", "stars"]);
-    assert.equal(HINT_STYLES.length, 5);
+  it("picks hint styles at random and never repeats the same one twice in a row", () => {
+    const seen = new Set<string>();
+    let prev = "";
+    for (let i = 0; i < 200; i++) {
+      const style = chooseHintStyle();
+      assert.notEqual(style, prev);
+      prev = style;
+      seen.add(style);
+    }
+    assert.equal(seen.size, HINT_STYLES.length);
+  });
+  it("order is not a fixed rotation", () => {
+    const a = Array.from({ length: 5 }, () => chooseHintStyle(() => 0));
+    assert.notDeepEqual(a, ["rocket", "archery", "sunflower", "parachute", "stars"]);
   });
 });

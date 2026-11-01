@@ -258,3 +258,6 @@
     scroll-behavior: auto !important;
   }
 }
+.hint-arrow::before { content: ""; position: absolute; left: 0; top: 50%; width: 80px; height: 6px; margin-top: -3px; border-radius: 3px; background: var(--color-joy-berry, currentColor); }
+.hint-arrow::after { content: ""; position: absolute; left: 76px; top: 50%; margin-top: -12px; border-left: 22px solid var(--color-joy-berry, currentColor); border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+.hint-arrow { width: 100px; margin-left: -96px; }
