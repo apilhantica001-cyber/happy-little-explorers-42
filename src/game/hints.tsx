@@ -103,7 +103,6 @@ export function HintControl() {
           { transform: at(end.x, end.y - 20, 1.5, -8), offset: .8 },
           { transform: at(end.x, end.y, 1.2, 0), offset: 1 },
         ];
-        animations.current.push({ cancel() {} } as Animation);
         window.setTimeout(() => { if (actor.dataset['style'] === "sunflower") actor.textContent = "🌱"; }, 0);
         window.setTimeout(() => { if (actor.dataset['style'] === "sunflower") actor.textContent = "🌻"; }, duration * .55);
       } else if (style === "stars") {
