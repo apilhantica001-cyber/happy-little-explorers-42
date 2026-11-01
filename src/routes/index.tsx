@@ -4,6 +4,7 @@ import { Download, Music, RotateCcw, Settings as SettingsIcon, Volume2, VolumeX 
 import { ACTIVITIES, DRAG_IDS, EASY_DRAG_IDS, EASY_IDS } from "@/game/activities";
 import { shuffle } from "@/game/shuffle";
 import { Celebration, Stage } from "@/game/ui";
+import { MagicSky } from "@/game/magic-mode";
 import capaAsset from "@/assets/capa.jpg.asset.json";
 import {
   loadSettings,
@@ -56,7 +57,7 @@ const COVER_URL = `https://happy-little-explorers-42.lovable.app${capaAsset.url}
 
 const ROUND_LEN = 10;
 
-type Mode = "tudo" | "arrastar" | "tocar";
+type Mode = "tudo" | "arrastar" | "tocar" | "surpresa";
 
 function poolFor(mode: Mode): number[] {
   return ACTIVITIES.map((a, i) => ({ a, i }))
@@ -267,6 +268,7 @@ function Game() {
       { m: "arrastar", icon: "✋", label: "Arrastar", say: "Arrastar!" },
       { m: "tocar", icon: "👆", label: "Tocar", say: "Tocar!" },
       { m: "tudo", icon: "🎲", label: "Tudo", say: "Tudo!" },
+      { m: "surpresa", icon: "🌙", label: "Céu Mágico", say: "Surpresa!" },
     ];
     return (
       <Stage>
@@ -278,13 +280,22 @@ function Game() {
               type="button"
               onClick={() => { speak(o.say); choose(o.m); }}
               aria-label={o.label}
-              className="flex h-[22dvh] items-center justify-center gap-4 rounded-4xl bg-card text-[clamp(4rem,18vw,6rem)] shadow-soft transition-transform active:scale-95"
+              className="flex h-[17dvh] items-center justify-center gap-4 rounded-4xl bg-card text-[clamp(4rem,18vw,6rem)] shadow-soft transition-transform active:scale-95"
             >
-              <span className={o.m === "arrastar" ? "animate-wiggle" : "animate-bob"}>{o.icon}</span>
+              <span className={o.m === "arrastar" ? "animate-wiggle" : o.m === "surpresa" ? "animate-float" : "animate-bob"}>{o.icon}</span>
               <span className="text-3xl font-black text-foreground">{o.label}</span>
             </button>
           ))}
         </div>
+      </Stage>
+    );
+  }
+
+  if (mode === "surpresa") {
+    return (
+      <Stage>
+        {audioControls}
+        <MagicSky />
       </Stage>
     );
   }
