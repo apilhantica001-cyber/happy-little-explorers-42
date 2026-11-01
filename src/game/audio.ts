@@ -439,7 +439,7 @@ export const sounds = {
 };
 
 /* ---------------- animals ---------------- */
-const ANIMAL_FILE: Record<string, string> = {
+export const ANIMAL_FILE: Record<string, string> = {
   cachorro: "dog",
   gato: "cat",
   vaca: "cow",
@@ -447,7 +447,14 @@ const ANIMAL_FILE: Record<string, string> = {
   passarinho: "bird",
   sapo: "frog",
   ovelha: "sheep",
+  leao: "lion",
+  elefante: "elephant",
+  macaco: "monkey",
+  peixe: "fish",
+  abelha: "bee",
 };
+/** Every animal id that must have its own recording. */
+export const ANIMAL_SOUND_IDS = Object.keys(ANIMAL_FILE);
 
 /** Synthesized, deliberately soft sounds for animals without a recording. */
 export const animalSounds: Record<string, () => void> = {
