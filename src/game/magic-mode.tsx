@@ -61,7 +61,7 @@ export function MagicSky() {
     lastSpawn.current = now;
     count.current++;
     const isAnimal = count.current % 3 !== 0;
-    const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)] ?? ANIMALS[0];
+    const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)] ?? { id: "cachorro", label: "cachorro", emoji: "🐶" };
     const pop: Pop = { id: nextId++, x, y, kind: isAnimal ? "animal" : "firework", emoji: isAnimal ? animal.emoji : "🎆" };
     setPops((p) => [...p, pop]);
     sounds.pop();
