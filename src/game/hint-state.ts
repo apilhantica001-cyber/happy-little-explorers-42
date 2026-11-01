@@ -20,9 +20,11 @@ export function beginHint(): (() => void) | undefined {
 
 export const HINT_STYLES = ["rocket", "archery", "sunflower", "parachute", "stars"] as const;
 export type HintStyle = typeof HINT_STYLES[number];
-let nextStyle = 0;
-export function chooseHintStyle(): HintStyle {
-  const style = HINT_STYLES[nextStyle % HINT_STYLES.length] ?? "rocket";
-  nextStyle++;
+let lastStyle: HintStyle | undefined;
+/** Random style each time, never the same one twice in a row. */
+export function chooseHintStyle(random: () => number = Math.random): HintStyle {
+  const options = HINT_STYLES.filter((s) => s !== lastStyle);
+  const style = options[Math.floor(random() * options.length) % options.length] ?? "rocket";
+  lastStyle = style;
   return style;
 }

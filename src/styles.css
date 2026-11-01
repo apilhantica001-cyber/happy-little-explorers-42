@@ -258,3 +258,16 @@
     scroll-behavior: auto !important;
   }
 }
+.hint-arrow::before { content: ""; position: absolute; left: 0; top: 50%; width: 80px; height: 6px; margin-top: -3px; border-radius: 3px; background: var(--color-joy-bubble); }
+.hint-arrow::after { content: ""; position: absolute; left: 76px; top: 50%; margin-top: -12px; border-left: 22px solid var(--color-joy-bubble); border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+.hint-arrow { width: 100px; margin-left: -96px; transform-origin: 96px 50%; }
+.magic-sky { background: radial-gradient(circle at 30% 20%, color-mix(in oklab, var(--joy-sky) 60%, transparent), transparent 60%), linear-gradient(180deg, color-mix(in oklab, var(--joy-sky) 40%, var(--foreground)) 0%, color-mix(in oklab, var(--joy-bubble) 45%, var(--foreground)) 100%); }
+.magic-hatch { transform: translate(-50%, -50%); animation: magic-hatch 3.2s ease-in forwards; }
+@keyframes magic-hatch { 0% { transform: translate(-50%,-50%) scale(0) rotate(-20deg); } 15% { transform: translate(-50%,-50%) scale(1.25) rotate(8deg); } 25% { transform: translate(-50%,-50%) scale(1) rotate(0); } 45% { transform: translate(-50%,-60%) rotate(-6deg); } 100% { transform: translate(-50%,-140vh) rotate(10deg); } }
+.magic-firework { transform: translate(-50%, -50%); animation: magic-fire 1.6s ease-out forwards; }
+@keyframes magic-fire { 0% { transform: translate(-50%,-50%) scale(.1); opacity: 1; } 40% { transform: translate(-50%,-50%) scale(1.6); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(2.2) rotate(30deg); opacity: 0; } }
+.magic-ring { position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 9999px; border: 6px solid var(--joy-sun); transform: translate(-50%,-50%); animation: magic-ring .8s ease-out forwards; }
+@keyframes magic-ring { to { width: 220px; height: 220px; opacity: 0; border-width: 1px; } }
+.magic-parade { left: 0; animation: magic-parade 5s linear forwards; }
+@keyframes magic-parade { 0% { transform: translateX(-12rem) translateY(0); } 25% { transform: translateX(25vw) translateY(-30px); } 50% { transform: translateX(50vw) translateY(10px); } 75% { transform: translateX(75vw) translateY(-30px); } 100% { transform: translateX(110vw) translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .magic-parade, .magic-hatch, .magic-firework { animation-duration: 1.2s; } }
