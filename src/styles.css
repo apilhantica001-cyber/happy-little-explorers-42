@@ -271,3 +271,17 @@
 .magic-parade { left: 0; animation: magic-parade 5s linear forwards; }
 @keyframes magic-parade { 0% { transform: translateX(-12rem) translateY(0); } 25% { transform: translateX(25vw) translateY(-30px); } 50% { transform: translateX(50vw) translateY(10px); } 75% { transform: translateX(75vw) translateY(-30px); } 100% { transform: translateX(110vw) translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .magic-parade, .magic-hatch, .magic-firework { animation-duration: 1.2s; } }
+.magic-fazenda { background: linear-gradient(180deg, var(--joy-sky), color-mix(in oklab, var(--joy-sky) 50%, var(--joy-sun))); }
+.magic-bolhas { background: linear-gradient(180deg, var(--joy-sky), var(--joy-mint)); }
+.magic-musica { background: linear-gradient(160deg, var(--joy-bubble), var(--joy-sun)); }
+.magic-jardim { background: linear-gradient(180deg, var(--joy-sky), var(--joy-sun)); }
+.magic-rise { bottom: -10rem; transform: translateX(-50%); animation: magic-rise linear forwards; }
+@keyframes magic-rise { 0% { transform: translate(-50%, 0); } 25% { transform: translate(-40%, -30vh); } 50% { transform: translate(-60%, -60vh); } 100% { transform: translate(-50%, -125vh); } }
+.magic-jump { animation: magic-jump .6s ease-out; }
+@keyframes magic-jump { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(-50px) scale(1.15); } 70% { transform: translateY(0) scale(.9,1.1); } }
+.magic-dance { animation: magic-dance .5s ease-in-out; }
+@keyframes magic-dance { 0%,100% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-15deg) translateY(-20px); } 75% { transform: rotate(15deg) translateY(-10px); } }
+.magic-grow { animation: magic-grow .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes magic-grow { from { transform: scale(.3); } to { transform: scale(1); } }
+.magic-shooting { left: -10%; top: 10%; animation: magic-shoot 1.8s ease-in forwards; }
+@keyframes magic-shoot { to { left: 110%; top: 40%; } }
