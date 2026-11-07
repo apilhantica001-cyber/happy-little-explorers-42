@@ -523,7 +523,7 @@ export const thingSounds: Record<string, () => void> = {
 
 /* ---------------- real-sounding instruments (synthesized, original) ---------------- */
 type Dest = "fx" | "music";
-const out = (d: Dest) => (d === "music" ? musicGain : fxGain);
+const outFor = (d: Dest) => (d === "music" ? musicGain : fxGain);
 const MUSIC_BOOST = 2.2;
 
 function env(c: AudioContext, t0: number, peak: number, attack: number, decay: number, dest: AudioNode) {
@@ -556,7 +556,7 @@ export type InstrumentId = "piano" | "violao" | "tambor" | "trompete" | "chocalh
 /** Play one note of an instrument. `when` is seconds from now. */
 export function playNote(id: InstrumentId | string, f: number, when = 0, vol = 1, dest: Dest = "fx") {
   const c = getCtx();
-  const o = out(dest);
+  const o = outFor(dest);
   if (!c || !o || settings.muted) return;
   const t = c.currentTime + when;
   if (dest === "music") vol *= MUSIC_BOOST;
