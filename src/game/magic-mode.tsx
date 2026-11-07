@@ -98,7 +98,7 @@ export function MagicSky() {
       {scene === "bolhas" && <BubbleScene ctx={ctx} />}
       {scene === "musica" && <MusicScene ctx={ctx} />}
       {scene === "jardim" && <GardenScene ctx={ctx} />}
-      <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-3" aria-label="Mundos">
+      <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-3" aria-label="Mundos" data-parent-controls>
         {SCENES.map((s) => (
           <button
             key={s.id}
