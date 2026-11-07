@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ExploreSceneActivity, KidsPlayActivity, SceneSeekActivity, SortActivity } from "./scenes";
 import { Prompt, Tile, TileGrid } from "./ui";
 import { pick, shuffle } from "./shuffle";
-import { sounds, speak, playTone, type SpeechPart } from "./audio";
+import { sounds, speak, playTone, playInstrument, type SpeechPart } from "./audio";
 import {
   ANIMALS,
   BODY,
@@ -581,8 +581,7 @@ export const ACTIVITIES: Activity[] = [
         {...p}
         pool={INSTRUMENTS.map((i) => i.item)}
         onTapSound={(item) => {
-          const found = INSTRUMENTS.find((i) => i.item.id === item.id);
-          if (found) found.notes.forEach((n, idx) => playTone(n, 0.3, "triangle", idx * 0.16));
+          playInstrument(item.id);
         }}
       />
     ),

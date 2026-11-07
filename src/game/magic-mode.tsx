@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { isNarrating, playAnimalSound, playMelody, sounds, speak, tone, type SpeechPart } from "./audio";
+import { isNarrating, playAnimalSound, playInstrument, playMelody, playNote, sounds, speak, tone, type SpeechPart } from "./audio";
 import { ANIMALS, COLORS, COLOR_EN, INSTRUMENTS, type Item } from "./data";
 
 /**
@@ -145,7 +145,7 @@ function SkyScene({ ctx }: { ctx: Ctx }) {
     if (now - t.current.note > 140) {
       t.current.note = now;
       const idx = Math.max(0, Math.min(PENTA.length - 1, Math.floor((1 - y / h) * PENTA.length)));
-      tone({ freq: PENTA[idx] ?? 440, duration: 0.25, type: "sine", gain: 0.1 });
+      playNote("caixinha", PENTA[idx] ?? 440, 0, 1.4);
     }
     // long painting earns a shooting star
     t.current.dist++;
@@ -370,9 +370,8 @@ function BubbleScene({ ctx }: { ctx: Ctx }) {
 /* ---------------- 4. Music room: pads, swipe glissando, dancing friend ---------------- */
 const PADS = [
   ...INSTRUMENTS.map((i) => ({ id: i.item.id, label: i.item.label, emoji: i.item.emoji ?? "🎵", notes: i.notes })),
-  { id: "sininho", label: "sininho", emoji: "🔔", notes: [1046, 1318, 1568] },
+  { id: "xilofone", label: "xilofone", emoji: "🎼", notes: [784, 988] },
 ].slice(0, 6);
-const TYPE: Record<string, OscillatorType> = { tambor: "sine", piano: "triangle", violao: "triangle", trompete: "sawtooth", chocalho: "square" };
 
 function MusicScene({ ctx }: { ctx: Ctx }) {
   const [active, setActive] = useState<string | null>(null);
@@ -389,9 +388,7 @@ function MusicScene({ ctx }: { ctx: Ctx }) {
     last.current = { id, at: now };
     const pad = PADS.find((p) => p.id === id);
     if (!pad) return;
-    const ty = TYPE[id] ?? "sine";
-    const g = id === "trompete" ? 0.06 : id === "chocalho" ? 0.04 : 0.15;
-    pad.notes.forEach((f, i) => tone({ freq: f, duration: id === "tambor" ? 0.25 : 0.35, type: ty, delay: i * 0.12, gain: g }));
+    playInstrument(id);
     setActive(id);
     setDance((d) => d + 1);
     ctx.burst(x, y, ["🎵", "🎶", "✨"], 4);
@@ -486,7 +483,7 @@ function GardenScene({ ctx }: { ctx: Ctx }) {
       sounds.swipe();
       ctx.burst(p.x, p.y + 50, ["💧"], 3);
       const under = plants.filter((q) => Math.abs(q.x - c.x) < 0.12).map((q) => q.key);
-      if (under.length) { grow(under); tone({ freq: 660, to: 990, duration: 0.15, type: "sine", gain: 0.08 }); }
+      if (under.length) { grow(under); playNote("xilofone", 660 + Math.random() * 330, 0, 0.7); }
     }
   };
 

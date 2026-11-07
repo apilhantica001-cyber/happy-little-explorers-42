@@ -185,11 +185,12 @@ function preload() {
   next();
 }
 
-function playBuffer(buf: AudioBuffer, dest: AudioNode, gain = 1) {
+function playBuffer(buf: AudioBuffer, dest: AudioNode, gain = 1, rate = 1) {
   const c = getCtx();
   if (!c) return null;
   const src = c.createBufferSource();
   src.buffer = buf;
+  src.playbackRate.value = rate;
   const g = c.createGain();
   g.gain.value = gain;
   src.connect(g).connect(dest);
@@ -490,7 +491,7 @@ export async function playAnimalSound(id: string) {
       } catch {
         /* ignore */
       }
-      animalSrc = playBuffer(buf, fxGain, 0.9);
+      animalSrc = playBuffer(buf, fxGain, 0.9, 0.94 + Math.random() * 0.14);
       return;
     }
   }
@@ -520,42 +521,237 @@ export const thingSounds: Record<string, () => void> = {
   },
 };
 
-/* ---------------- calm ambient music (original, several themes) ---------------- */
-const THEMES: { notes: number[]; step: number; wave: OscillatorType }[] = [
-  { notes: [523, 659, 784, 659, 587, 698, 880, 698], step: 2.2, wave: "sine" },
-  { notes: [392, 494, 587, 494, 440, 523, 659, 523], step: 2.6, wave: "triangle" },
-  { notes: [659, 587, 523, 587, 659, 784, 659, 523], step: 2.4, wave: "sine" },
+/* ---------------- real-sounding instruments (synthesized, original) ---------------- */
+type Dest = "fx" | "music";
+const out = (d: Dest) => (d === "music" ? musicGain : fxGain);
+const MUSIC_BOOST = 2.2;
+
+function env(c: AudioContext, t0: number, peak: number, attack: number, decay: number, dest: AudioNode) {
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(peak, t0 + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + attack + decay);
+  g.connect(dest);
+  return g;
+}
+function osc(c: AudioContext, type: OscillatorType, f: number, t0: number, dur: number, to: AudioNode, detune = 0) {
+  const o = c.createOscillator();
+  o.type = type;
+  o.frequency.value = f;
+  o.detune.value = detune;
+  o.connect(to);
+  o.start(t0);
+  o.stop(t0 + dur + 0.05);
+  return o;
+}
+function noiseBuf(c: AudioContext, dur: number) {
+  const b = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate);
+  const d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  return b;
+}
+
+export type InstrumentId = "piano" | "violao" | "tambor" | "trompete" | "chocalho" | "sino" | "xilofone" | "flauta" | "caixinha";
+
+/** Play one note of an instrument. `when` is seconds from now. */
+export function playNote(id: InstrumentId | string, f: number, when = 0, vol = 1, dest: Dest = "fx") {
+  const c = getCtx();
+  const o = out(dest);
+  if (!c || !o || settings.muted) return;
+  const t = c.currentTime + when;
+  if (dest === "music") vol *= MUSIC_BOOST;
+  switch (id) {
+    case "piano": {
+      const g = env(c, t, 0.22 * vol, 0.005, 1.4, o);
+      osc(c, "triangle", f, t, 1.5, g);
+      const g2 = env(c, t, 0.08 * vol, 0.005, 0.6, o);
+      osc(c, "sine", f * 2, t, 0.7, g2, 3);
+      const g3 = env(c, t, 0.03 * vol, 0.003, 0.25, o);
+      osc(c, "sine", f * 3, t, 0.3, g3);
+      break;
+    }
+    case "violao": {
+      // Karplus-Strong plucked string
+      const N = Math.round(c.sampleRate / f);
+      const len = Math.ceil(c.sampleRate * 1.6);
+      const b = c.createBuffer(1, len, c.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < N; i++) d[i] = Math.random() * 2 - 1;
+      for (let i = N; i < len; i++) d[i] = 0.497 * (d[i - N]! + d[i - N + 1]!);
+      const s = c.createBufferSource();
+      s.buffer = b;
+      const lp = c.createBiquadFilter();
+      lp.frequency.value = 2600;
+      const g = c.createGain();
+      g.gain.value = 0.35 * vol;
+      s.connect(lp).connect(g).connect(o);
+      s.start(t);
+      break;
+    }
+    case "tambor": {
+      const g = env(c, t, 0.5 * vol, 0.003, 0.35, o);
+      const k = osc(c, "sine", f * 1.6, t, 0.4, g);
+      k.frequency.setValueAtTime(f * 1.6, t);
+      k.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.3);
+      const n = c.createBufferSource();
+      n.buffer = noiseBuf(c, 0.1);
+      const bp = c.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = 900;
+      n.connect(bp).connect(env(c, t, 0.12 * vol, 0.002, 0.08, o));
+      n.start(t);
+      break;
+    }
+    case "trompete": {
+      const lp = c.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.Q.value = 2;
+      lp.frequency.setValueAtTime(500, t);
+      lp.frequency.linearRampToValueAtTime(2200, t + 0.08);
+      lp.frequency.linearRampToValueAtTime(1400, t + 0.5);
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.09 * vol, t + 0.06);
+      g.gain.setValueAtTime(0.08 * vol, t + 0.4);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
+      lp.connect(g).connect(o);
+      const s = osc(c, "sawtooth", f, t, 0.7, lp);
+      const lfo = c.createOscillator();
+      const lg = c.createGain();
+      lfo.frequency.value = 5.5;
+      lg.gain.value = 6;
+      lfo.connect(lg).connect(s.detune);
+      lfo.start(t + 0.15);
+      lfo.stop(t + 0.7);
+      break;
+    }
+    case "chocalho": {
+      [0, 0.09, 0.18].forEach((d, i) => {
+        const n = c.createBufferSource();
+        n.buffer = noiseBuf(c, 0.12);
+        const hp = c.createBiquadFilter();
+        hp.type = "highpass";
+        hp.frequency.value = 4500;
+        n.connect(hp).connect(env(c, t + d, (i === 1 ? 0.14 : 0.1) * vol, 0.004, 0.08, o));
+        n.start(t + d);
+      });
+      break;
+    }
+    case "sino": {
+      [1, 2.76, 5.4].forEach((m, i) => {
+        const g = env(c, t, [0.12, 0.05, 0.025][i]! * vol, 0.002, [2.2, 1.2, 0.6][i]!, o);
+        osc(c, "sine", f * m, t, 2.3, g);
+      });
+      break;
+    }
+    case "xilofone": {
+      const g = env(c, t, 0.25 * vol, 0.002, 0.45, o);
+      osc(c, "sine", f, t, 0.5, g);
+      const g2 = env(c, t, 0.06 * vol, 0.001, 0.12, o);
+      osc(c, "sine", f * 4, t, 0.15, g2);
+      break;
+    }
+    case "caixinha": {
+      // music box
+      const g = env(c, t, 0.12 * vol, 0.002, 1.1, o);
+      osc(c, "sine", f, t, 1.2, g);
+      const g2 = env(c, t, 0.04 * vol, 0.002, 0.4, o);
+      osc(c, "sine", f * 3.01, t, 0.5, g2);
+      break;
+    }
+    case "flauta":
+    default: {
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.14 * vol, t + 0.1);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+      g.connect(o);
+      const s = osc(c, "sine", f, t, 1, g);
+      const lfo = c.createOscillator();
+      const lg = c.createGain();
+      lfo.frequency.value = 5;
+      lg.gain.value = 8;
+      lfo.connect(lg).connect(s.detune);
+      lfo.start(t);
+      lfo.stop(t + 1);
+    }
+  }
+}
+
+/** Little tunes per instrument so each one sounds like itself. */
+const LICKS: Record<string, number[][]> = {
+  piano: [[523, 659, 784], [784, 659, 523], [523, 587, 659, 784]],
+  violao: [[330, 392, 494], [262, 330, 392, 523], [294, 370, 440]],
+  tambor: [[110, 110, 90], [110, 90, 110, 90], [100, 100]],
+  trompete: [[392, 523], [440, 587, 523], [523, 659]],
+  chocalho: [[1], [1, 1]],
+  sino: [[1046, 1318], [1568, 1318, 1046], [1318]],
+  sininho: [[1046, 1318, 1568]],
+  xilofone: [[784, 880, 988, 1175], [1175, 988, 784]],
+};
+let lickIdx = 0;
+export function playInstrument(id: string) {
+  const inst = id === "sininho" ? "sino" : id;
+  const set = LICKS[id] ?? LICKS[inst] ?? [[523, 659]];
+  const lick = set[lickIdx++ % set.length]!;
+  const step = inst === "tambor" ? 0.18 : inst === "chocalho" ? 0.3 : inst === "trompete" ? 0.22 : 0.14;
+  lick.forEach((f, i) => playNote(inst, f, i * step));
+}
+
+/* ---------------- background music: several original gentle songs ---------------- */
+// Each song: chord roots (Hz) per bar, melody (semitones from root, null = rest), instruments, tempo.
+type Song = { bpm: number; chords: number[][]; melody: (number | null)[]; lead: InstrumentId; pad: InstrumentId; bass: boolean; shaker?: boolean };
+const C4 = 261.63;
+const st = (n: number) => C4 * Math.pow(2, n / 12);
+const SONGS: Song[] = [
+  // music box lullaby (C - Am - F - G)
+  { bpm: 72, chords: [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2]], melody: [12, null, 16, 14, 12, null, 9, null, 9, 12, 11, null, 7, null, null, null], lead: "caixinha", pad: "piano", bass: false },
+  // sunny xylophone walk (F - C - G - C)
+  { bpm: 92, chords: [[5, 9, 12], [0, 4, 7], [-5, -1, 2], [0, 4, 7]], melody: [17, 16, 14, 12, 14, null, 16, null, 14, 12, 11, 12, 7, null, 12, null], lead: "xilofone", pad: "violao", bass: true, shaker: true },
+  // soft guitar bossa (Dm - G - C - A)
+  { bpm: 84, chords: [[2, 5, 9], [-5, -1, 2], [0, 4, 7], [-3, 1, 4]], melody: [14, null, 12, 9, null, 11, 14, null, 16, 14, 12, null, 13, null, null, null], lead: "flauta", pad: "violao", bass: true, shaker: true },
+  // starry bells (C - Em - F - G)
+  { bpm: 66, chords: [[0, 4, 7], [4, 7, 11], [5, 9, 12], [7, 11, 14]], melody: [19, null, null, 16, null, null, 17, null, 21, null, 19, null, null, null, null, null], lead: "sino", pad: "piano", bass: false },
+  // happy farm (G - C - D - G)
+  { bpm: 100, chords: [[7, 11, 14], [0, 4, 7], [2, 6, 9], [7, 11, 14]], melody: [19, 19, 21, 19, 16, null, 14, null, 18, 18, 19, 21, 19, null, null, null], lead: "xilofone", pad: "piano", bass: true, shaker: true },
+  // dreamy flute (Am - F - C - G)
+  { bpm: 70, chords: [[-3, 0, 4], [-7, -3, 0], [0, 4, 7], [-5, -1, 2]], melody: [12, null, 11, 9, null, null, 7, null, 9, null, 12, null, 14, null, null, null], lead: "flauta", pad: "caixinha", bass: false },
 ];
-let theme = 0;
-let musicStep = 0;
+export const SONG_COUNT = SONGS.length;
+let theme = Math.floor(Math.random() * SONGS.length);
+let beat = 0;
 let musicTimer: number | null = null;
+let loopsOnSong = 0;
 
 function musicTick() {
-  // A timeout that has fired is no longer active. Clear its handle before
-  // checking settings so startMusic() can restart playback after mute/toggle.
   musicTimer = null;
   if (typeof window === "undefined" || !settings.musicOn || settings.muted) return;
   const c = getCtx();
   if (!c || !musicGain) return;
-  const th = THEMES[theme % THEMES.length]!;
-  const base = th.notes[musicStep % th.notes.length]!;
-  [base, base / 2].forEach((f, i) => {
-    const t0 = c.currentTime + i * 0.03;
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    osc.type = th.wave;
-    osc.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(i === 0 ? 0.35 : 0.25, t0 + 0.6);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + th.step);
-    osc.connect(g).connect(musicGain!);
-    osc.start(t0);
-    osc.stop(t0 + th.step + 0.1);
-  });
-  musicStep++;
-  // a short breath of silence every 8 notes so it never feels constant
-  const wait = musicStep % 8 === 0 ? th.step * 2.5 : th.step;
-  musicTimer = window.setTimeout(musicTick, wait * 1000);
+  const song = SONGS[theme]!;
+  const eighth = 60 / song.bpm / 2;
+  const bar = Math.floor(beat / 8) % song.chords.length;
+  const chord = song.chords[bar]!;
+  const b8 = beat % 8;
+  // gentle arpeggiated chord
+  if (b8 % 2 === 0) playNote(song.pad, st(chord[(b8 / 2) % chord.length]!), 0.02, 0.55, "music");
+  if (song.bass && (b8 === 0 || b8 === 4)) playNote("piano", st(chord[0]! - 12), 0.02, 0.6, "music");
+  if (song.shaker && b8 % 2 === 1) playNote("chocalho", 1, 0.02, 0.25, "music");
+  const m = song.melody[beat % song.melody.length];
+  if (m !== null && m !== undefined) playNote(song.lead, st(m), 0.02, 0.7, "music");
+  beat++;
+  // after a few loops, a breath of silence, then another song
+  if (beat % (song.chords.length * 8) === 0) {
+    loopsOnSong++;
+    if (loopsOnSong >= 3) {
+      loopsOnSong = 0;
+      theme = (theme + 1 + Math.floor(Math.random() * (SONGS.length - 1))) % SONGS.length;
+      beat = 0;
+      musicTimer = window.setTimeout(musicTick, 6000);
+      return;
+    }
+  }
+  musicTimer = window.setTimeout(musicTick, eighth * 1000);
 }
 
 export function startMusic() {
@@ -568,8 +764,9 @@ export function stopMusic() {
     musicTimer = null;
   }
 }
-/** Change to another calm theme (called between rounds). */
+/** Change to another song (called between rounds). */
 export function nextMusicTheme() {
-  theme = (theme + 1) % THEMES.length;
-  musicStep = 0;
+  theme = (theme + 1) % SONGS.length;
+  beat = 0;
+  loopsOnSong = 0;
 }
