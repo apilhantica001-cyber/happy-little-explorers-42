@@ -285,3 +285,21 @@
 @keyframes magic-grow { from { transform: scale(.3); } to { transform: scale(1); } }
 .magic-shooting { left: -10%; top: 10%; animation: magic-shoot 1.8s ease-in forwards; }
 @keyframes magic-shoot { to { left: 110%; top: 40%; } }
+
+.magic-moon-glow { animation: magic-moon .9s cubic-bezier(.3,1.6,.5,1); filter: drop-shadow(0 0 24px var(--joy-sun)); }
+@keyframes magic-moon { 0% { transform: scale(1); } 40% { transform: scale(1.35) rotate(-8deg); } 100% { transform: scale(1); } }
+.magic-twinkle { transform: translate(-50%,-50%); animation: magic-twinkle 2.4s ease-in-out infinite, magic-grow .5s cubic-bezier(.3,1.6,.5,1); filter: drop-shadow(0 0 10px var(--joy-sun)); }
+@keyframes magic-twinkle { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+.magic-line { animation: magic-dash 1.2s linear infinite; }
+@keyframes magic-dash { to { stroke-dashoffset: -28; } }
+.magic-wobble > span { display: inline-block; animation: magic-wob 1.6s ease-in-out infinite; }
+@keyframes magic-wob { 0%,100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-8px); } }
+.magic-arrow-up { transform: translateX(-50%); animation: magic-up 1.4s ease-in-out infinite; opacity: .8; }
+@keyframes magic-up { 0% { transform: translate(-50%, 40px); opacity: 0; } 30% { opacity: .9; } 100% { transform: translate(-50%, -80px); opacity: 0; } }
+.sea-wave { animation: sea-wave 6s linear infinite; }
+@keyframes sea-wave { to { transform: translateX(-50%); } }
+.sea-rock { animation: sea-rock 2.4s ease-in-out infinite; }
+@keyframes sea-rock { 0%,100% { rotate: -4deg; } 50% { rotate: 4deg; } }
+.sea-sway { transform-origin: bottom center; animation: sea-sway 3s ease-in-out infinite; }
+@keyframes sea-sway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@media (prefers-reduced-motion: reduce) { .magic-twinkle, .magic-line, .magic-wobble > span, .magic-arrow-up, .sea-wave, .sea-rock, .sea-sway { animation: none; } }

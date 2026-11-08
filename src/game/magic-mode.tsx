@@ -37,7 +37,7 @@ const SCENES = [
   { id: "bolhas", icon: "🫧", intro: "Estoure as bolhas!" },
   { id: "musica", icon: "🎵", intro: "Vamos brincar!" },
   { id: "jardim", icon: "🌻", intro: "Toque nas plantinhas para crescer as flores!" },
-  { id: "mar", icon: "🐠", intro: "Olha o fundo do mar!" },
+  { id: "mar", icon: "🎣", intro: "Vamos brincar!" },
 ] as const;
 type SceneId = (typeof SCENES)[number]["id"];
 
@@ -181,6 +181,54 @@ function SkyScene({ ctx }: { ctx: Ctx }) {
     }
   };
 
+  /* Drag fallen stars up into the moon's sky; each one placed joins a constellation. */
+  const [stars, setStars] = useState(() => [0, 1, 2].map((i) => ({ k: nextId++, x: 20 + i * 30, y: 74, sx: 20 + i * 30, sy: 74 })));
+  const [placed, setPlaced] = useState<{ k: number; x: number; y: number }[]>([]);
+  const [moonGlow, setMoonGlow] = useState(0);
+  const drag = useRef<number | null>(null);
+  const grab = (k: number, e: React.PointerEvent) => {
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    drag.current = k;
+    sounds.pop();
+    setStars((s) => s.map((x) => (x.k === k ? { ...x } : x)));
+  };
+  const dragMove = (k: number, e: React.PointerEvent) => {
+    if (drag.current !== k) return;
+    e.stopPropagation();
+    const p = local(ctx.root.current, e);
+    sparkle(p.x, p.y, p.h);
+    setStars((s) => s.map((x) => (x.k === k ? { ...x, x: (p.x / p.w) * 100, y: (p.y / p.h) * 100 } : x)));
+  };
+  const drop = (k: number, e: React.PointerEvent) => {
+    if (drag.current !== k) return;
+    e.stopPropagation();
+    drag.current = null;
+    const st = stars.find((x) => x.k === k);
+    if (!st) return;
+    if (st.y < 42) {
+      const spot = { k, x: 12 + Math.random() * 76, y: 14 + Math.random() * 22 };
+      setStars((s) => s.filter((x) => x.k !== k));
+      setPlaced((pl) => {
+        const next = [...pl, spot].slice(-12);
+        return next;
+      });
+      setMoonGlow((g) => g + 1);
+      const p = local(ctx.root.current, e);
+      ctx.burst(p.x, p.y, ["⭐", "✨", "💫"], 10);
+      playMelody([659, 784, 988, 1319], 0.1, "sine", 0.1);
+      const left = stars.length - 1;
+      if (left === 0) {
+        ctx.later(() => { sounds.cheer(); void ctx.say(rnd(["Oba!", "Muito bem!", "Uau!"])); setParade({ id: nextId++, emoji: rnd(PARADE) }); }, 500);
+        ctx.later(() => setParade(null), 5500);
+        ctx.later(() => setStars([0, 1, 2].map((i) => { const x = 18 + i * 32 + Math.random() * 6; return { k: nextId++, x, y: 74, sx: x, sy: 74 }; })), 1800);
+      } else void ctx.say(rnd(["Isso!", "Que legal!"]));
+    } else {
+      sounds.transition();
+      setStars((s) => s.map((x) => (x.k === k ? { ...x, x: x.sx, y: x.sy } : x)));
+    }
+  };
+
   return (
     <div
       className="absolute inset-0"
@@ -194,7 +242,30 @@ function SkyScene({ ctx }: { ctx: Ctx }) {
       onPointerUp={(e) => { const p = local(ctx.root.current, e); if (down.current && !down.current.moved) spawn(p.x, p.y); down.current = null; }}
       onPointerCancel={() => { down.current = null; }}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-6 flex justify-center text-6xl opacity-80 animate-bob" aria-hidden>🌙</div>
+      <div key={moonGlow} className={`pointer-events-none absolute inset-x-0 top-6 flex justify-center text-7xl ${moonGlow ? "magic-moon-glow" : "animate-bob"}`} aria-hidden>{moonGlow ? "🌝" : "🌙"}</div>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
+        {placed.slice(1).map((p, i) => <line key={p.k} x1={`${placed[i]!.x}%`} y1={`${placed[i]!.y}%`} x2={`${p.x}%`} y2={`${p.y}%`} stroke="var(--joy-sun)" strokeWidth="3" strokeDasharray="6 8" className="magic-line" />)}
+      </svg>
+      {placed.map((p) => <div key={p.k} className="magic-twinkle pointer-events-none absolute text-4xl" style={{ left: `${p.x}%`, top: `${p.y}%` }} aria-hidden>⭐</div>)}
+      {stars.map((st) => {
+        const active = drag.current === st.k;
+        return (
+          <button
+            key={st.k}
+            type="button"
+            aria-label="estrelinha"
+            onPointerDown={(e) => grab(st.k, e)}
+            onPointerMove={(e) => dragMove(st.k, e)}
+            onPointerUp={(e) => drop(st.k, e)}
+            onPointerCancel={(e) => drop(st.k, e)}
+            className={`absolute z-10 flex h-32 w-32 items-center justify-center touch-none ${active ? "" : "transition-all duration-500 ease-out magic-wobble"}`}
+            style={{ left: `${st.x}%`, top: `${st.y}%`, transform: `translate(-50%,-50%) scale(${active ? 1.35 : 1})` }}
+          >
+            <span className="text-[4.5rem] leading-none" style={{ filter: `drop-shadow(0 0 ${active ? 22 : 10}px var(--joy-sun))` }}>⭐</span>
+          </button>
+        );
+      })}
+      {stars.length > 0 && placed.length === 0 && <div className="magic-arrow-up pointer-events-none absolute left-1/2 top-[52%] text-5xl" aria-hidden>👆</div>}
       {shooting && <div key={shooting} className="magic-shooting pointer-events-none absolute text-6xl" aria-hidden>🌠</div>}
       {pops.map((p) => (
         <div key={p.id} className="pointer-events-none absolute" style={{ left: p.x, top: p.y }} aria-hidden>
@@ -546,69 +617,135 @@ function GardenScene({ ctx }: { ctx: Ctx }) {
   );
 }
 
-/* ---------------- 6. Sea: tap creatures, swipe bubbles, open the treasure ---------------- */
+/* ---------------- 6. Sea: fishing — move the hook, catch, reel up ---------------- */
 const SEA = [
   { e: "🐠", say: "Olha o peixinho!", f: 523 },
-  { e: "🐙", say: "Olha o polvo!", f: 392 },
-  { e: "🐢", say: "Olha a tartaruga!", f: 330 },
-  { e: "🐳", say: "Olha a baleia!", f: 262 },
-  { e: "🦀", say: "Olha o caranguejo!", f: 440 },
-  { e: "🐬", say: "Olha o golfinho!", f: 659 },
+  { e: "🐙", say: "Que legal!", f: 392 },
+  { e: "🐢", say: "Que legal!", f: 330 },
+  { e: "🐡", say: "Olha o peixinho!", f: 587 },
+  { e: "🦀", say: "Uau!", f: 440 },
+  { e: "🐬", say: "Que legal!", f: 659 },
+  { e: "🐟", say: "Olha o peixinho!", f: 494 },
 ];
 const TREASURE = ["💎", "👑", "🪙", "⭐", "🐚", "🌈"];
+const WATER = 24; // % where the water starts
+type Swimmer = { k: number; e: string; say: string; f: number; x: number; y: number; v: number; ph: number };
+const newSwimmer = (y?: number): Swimmer => {
+  const c = rnd(SEA);
+  const left = Math.random() < 0.5;
+  return { ...c, k: nextId++, x: left ? -8 : 108, y: y ?? 36 + Math.random() * 40, v: (left ? 1 : -1) * (0.08 + Math.random() * 0.07), ph: Math.random() * 6 };
+};
 
 function SeaScene({ ctx }: { ctx: Ctx }) {
-  const [fish] = useState(() => [...SEA].sort(() => Math.random() - 0.5).slice(0, 4).map((c, i) => ({ ...c, k: i, x: 12 + (i % 2) * 48 + Math.random() * 10, y: 18 + Math.floor(i / 2) * 26 })));
-  const [spin, setSpin] = useState<Record<number, number>>({});
-  const [open, setOpen] = useState(false);
-  const taps = useRef(0);
+  const fish = useRef<Swimmer[]>([0, 1, 2, 3].map((i) => { const f = newSwimmer(36 + i * 11); f.x = 15 + Math.random() * 70; return f; }));
+  const hook = useRef({ x: 50, y: 45, tx: 50, ty: 45 });
+  const caught = useRef<{ f: Swimmer; t0: number; fromY: number } | null>(null);
+  const [bucket, setBucket] = useState<{ k: number; e: string }[]>([]);
+  const [chest, setChest] = useState(false);
+  const [, setTick] = useState(0);
+  const count = useRef(0);
   const last = useRef(0);
 
-  const tapFish = (k: number, e: React.PointerEvent) => {
-    e.stopPropagation();
-    const c = fish[k];
-    if (!c) return;
-    const p = local(ctx.root.current, e);
-    setSpin((s) => ({ ...s, [k]: (s[k] ?? 0) + 1 }));
-    sounds.pop();
-    playMelody([c.f, c.f * 1.25, c.f * 1.5], 0.12, "sine", 0.1);
-    ctx.burst(p.x, p.y, ["🫧", "💧", "✨"], 7);
-    void ctx.say(c.say);
-    if (++taps.current % 5 === 0) {
-      setOpen(true);
-      ctx.later(() => { sounds.cheer(); const r = ctx.root.current?.getBoundingClientRect(); ctx.burst((r?.width ?? 300) / 2, (r?.height ?? 600) - 170, TREASURE, 12); void ctx.say(rnd(["Um tesouro!", "Uau!", "Oba!"])); }, 300);
-      ctx.later(() => setOpen(false), 3500);
-    }
-  };
+  useEffect(() => {
+    let raf = 0;
+    const loop = (now: number) => {
+      const h = hook.current;
+      const c = caught.current;
+      if (c) {
+        const k = Math.min(1, (now - c.t0) / 1100);
+        h.y = c.fromY + (WATER - 8 - c.fromY) * (1 - Math.pow(1 - k, 2));
+        c.f.x = h.x; c.f.y = h.y + 6;
+        if (k >= 1) {
+          caught.current = null;
+          const f = c.f;
+          setBucket((b) => [...b.slice(-5), { k: f.k, e: f.e }]);
+          sounds.cheer();
+          const r = ctx.root.current?.getBoundingClientRect();
+          ctx.burst(((r?.width ?? 300) * h.x) / 100, ((r?.height ?? 600) * h.y) / 100, ["💦", "✨", "⭐"], 10);
+          fish.current = fish.current.filter((x) => x !== f).concat(newSwimmer());
+          h.ty = 45;
+          if (++count.current % 5 === 0) {
+            setChest(true);
+            ctx.later(() => { sounds.sparkle(); const rr = ctx.root.current?.getBoundingClientRect(); ctx.burst((rr?.width ?? 300) / 2, (rr?.height ?? 600) - 170, TREASURE, 14); void ctx.say("Uau!"); }, 300);
+            ctx.later(() => setChest(false), 3800);
+          } else void ctx.say(rnd(["Muito bem!", "Oba!", "Isso!"]));
+        }
+      } else {
+        h.x += (h.tx - h.x) * 0.12;
+        h.y += (h.ty - h.y) * 0.12;
+        for (const f of fish.current) {
+          if (Math.hypot((f.x - h.x) * 0.8, f.y - h.y - 4) < 10) {
+            caught.current = { f, t0: now, fromY: h.y };
+            sounds.pop();
+            playMelody([f.f, f.f * 1.25, f.f * 1.5, f.f * 2], 0.1, "sine", 0.1);
+            void ctx.say(f.say);
+            break;
+          }
+        }
+      }
+      for (const f of fish.current) {
+        if (caught.current?.f === f) continue;
+        f.x += f.v;
+        f.ph += 0.04;
+        if (f.x < -10 || f.x > 110) Object.assign(f, newSwimmer(f.y), { k: f.k });
+      }
+      setTick((t) => t + 1);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const bubbles = (e: React.PointerEvent) => {
-    if (e.buttons === 0 && e.type === "pointermove") return;
+  const move = (e: React.PointerEvent) => {
+    if (e.type === "pointermove" && e.buttons === 0 && e.pointerType === "mouse") return;
+    const p = local(ctx.root.current, e);
+    hook.current.tx = Math.max(6, Math.min(94, (p.x / p.w) * 100));
+    hook.current.ty = Math.max(WATER + 6, Math.min(80, (p.y / p.h) * 100));
     const now = performance.now();
-    if (now - last.current < 90) return;
-    last.current = now;
-    const p = local(ctx.root.current, e);
-    ctx.burst(p.x, p.y, ["🫧"], 3);
-    playNote("caixinha", PENTA[Math.floor(Math.random() * PENTA.length)] ?? 440, 0, 0.8);
+    if (now - last.current > 220) { last.current = now; ctx.burst(p.x, p.y, ["🫧"], 2); }
   };
 
+  const h = hook.current;
   return (
-    <div className="absolute inset-0 bg-gradient-to-b from-joy-sky/40 to-joy-sky" onPointerDown={bubbles} onPointerMove={bubbles}>
-      <div className="pointer-events-none absolute bottom-24 left-4 text-6xl" aria-hidden>🌿</div>
-      <div className="pointer-events-none absolute bottom-24 right-6 text-5xl" aria-hidden>🪸</div>
-      {fish.map((c) => (
-        <button
-          key={c.k}
-          type="button"
-          aria-label={c.say}
-          onPointerDown={(e) => tapFish(c.k, e)}
-          className="absolute flex h-32 w-32 items-center justify-center animate-bob"
-          style={{ left: `${c.x}%`, top: `${c.y}%`, animationDelay: `${c.k * 0.4}s` }}
-        >
-          <span key={spin[c.k] ?? 0} className="text-[5.5rem] leading-none" style={{ display: "inline-block", animation: spin[c.k] ? "spin 0.6s ease-out" : undefined }}>{c.e}</span>
-        </button>
-      ))}
-      <div className="pointer-events-none absolute bottom-24 left-1/2 -translate-x-1/2 text-7xl transition-transform duration-300" style={{ transform: `translateX(-50%) scale(${open ? 1.3 : 1})` }} aria-hidden>
-        {open ? "✨🧰✨" : "🧰"}
+    <div className="absolute inset-0 overflow-hidden" onPointerDown={move} onPointerMove={move}>
+      <div className="absolute inset-x-0 top-0 bg-joy-sky/30" style={{ height: `${WATER}%` }} />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-b from-joy-sky/70 to-joy-sky" style={{ top: `${WATER}%` }}>
+        <div className="sea-wave absolute -top-3 left-0 h-6 w-[200%] rounded-full bg-joy-sky/60" />
+      </div>
+      <div className="pointer-events-none absolute right-6 top-4 text-5xl animate-bob" aria-hidden>☀️</div>
+      {/* boat + line + hook */}
+      <div className="pointer-events-none absolute text-7xl leading-none sea-rock" style={{ left: `${h.x}%`, top: `${WATER - 13}%`, transform: "translateX(-50%)" }} aria-hidden>⛵</div>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
+        <line x1={`${h.x}%`} y1={`${WATER - 2}%`} x2={`${h.x}%`} y2={`${h.y}%`} stroke="currentColor" strokeWidth="3" className="text-foreground/60" />
+      </svg>
+      <div className="pointer-events-none absolute text-5xl leading-none" style={{ left: `${h.x}%`, top: `${h.y}%`, transform: "translate(-50%,-30%)" }} aria-hidden>🪝</div>
+      {fish.current.map((f) => {
+        const isCaught = caught.current?.f === f;
+        return (
+          <div
+            key={f.k}
+            className="pointer-events-none absolute text-[5rem] leading-none"
+            style={{
+              left: `${f.x}%`,
+              top: `${f.y + (isCaught ? 0 : Math.sin(f.ph) * 2)}%`,
+              transform: `translate(-50%,-50%) scaleX(${f.v > 0 ? -1 : 1}) rotate(${isCaught ? Math.sin(performance.now() / 60) * 25 : Math.sin(f.ph * 2) * 6}deg)`,
+              filter: isCaught ? "drop-shadow(0 0 14px var(--joy-sun))" : undefined,
+            }}
+            aria-hidden
+          >
+            {f.e}
+          </div>
+        );
+      })}
+      <div className="pointer-events-none absolute bottom-24 left-3 text-6xl sea-sway" aria-hidden>🌿</div>
+      <div className="pointer-events-none absolute bottom-24 right-4 text-5xl sea-sway" style={{ animationDelay: "0.8s" }} aria-hidden>🪸</div>
+      <div className="pointer-events-none absolute bottom-24 left-1/2 text-7xl transition-transform duration-500" style={{ transform: `translateX(-50%) scale(${chest ? 1.35 : 1}) rotate(${chest ? -6 : 0}deg)` }} aria-hidden>
+        {chest ? "✨🧰✨" : "🧰"}
+      </div>
+      {/* bucket of caught friends */}
+      <div className="pointer-events-none absolute left-3 top-3 flex max-w-[45%] flex-wrap items-center gap-1 rounded-3xl bg-card/70 px-3 py-1 text-3xl shadow-soft" aria-hidden>
+        🪣{bucket.map((b) => <span key={b.k} className="animate-pop inline-block">{b.e}</span>)}
       </div>
     </div>
   );
