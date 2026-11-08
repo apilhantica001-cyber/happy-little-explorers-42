@@ -37,6 +37,7 @@ const SCENES = [
   { id: "bolhas", icon: "🫧", intro: "Estoure as bolhas!" },
   { id: "musica", icon: "🎵", intro: "Vamos brincar!" },
   { id: "jardim", icon: "🌻", intro: "Toque nas plantinhas para crescer as flores!" },
+  { id: "mar", icon: "🐠", intro: "Olha o fundo do mar!" },
 ] as const;
 type SceneId = (typeof SCENES)[number]["id"];
 
@@ -98,14 +99,15 @@ export function MagicSky() {
       {scene === "bolhas" && <BubbleScene ctx={ctx} />}
       {scene === "musica" && <MusicScene ctx={ctx} />}
       {scene === "jardim" && <GardenScene ctx={ctx} />}
-      <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-3" aria-label="Mundos" data-parent-controls>
+      {scene === "mar" && <SeaScene ctx={ctx} />}
+      <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2" aria-label="Mundos" data-parent-controls>
         {SCENES.map((s) => (
           <button
             key={s.id}
             type="button"
             aria-label={s.id}
             onClick={() => choose(s.id)}
-            className={`flex items-center justify-center rounded-full bg-card/80 shadow-soft transition-all active:scale-90 ${s.id === scene ? "h-20 w-20 text-5xl ring-4 ring-joy-sun" : "h-16 w-16 text-4xl opacity-80"}`}
+            className={`flex items-center justify-center rounded-full bg-card/80 shadow-soft transition-all active:scale-90 ${s.id === scene ? "h-[4.5rem] w-[4.5rem] text-5xl ring-4 ring-joy-sun" : "h-14 w-14 text-3xl opacity-80"}`}
           >
             {s.icon}
           </button>
@@ -540,6 +542,74 @@ function GardenScene({ ctx }: { ctx: Ctx }) {
           <span key={q.s} className="magic-grow leading-none" style={{ fontSize: `${3.5 + q.s * 1}rem` }}>{STAGES[q.s]}</span>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ---------------- 6. Sea: tap creatures, swipe bubbles, open the treasure ---------------- */
+const SEA = [
+  { e: "🐠", say: "Olha o peixinho!", f: 523 },
+  { e: "🐙", say: "Olha o polvo!", f: 392 },
+  { e: "🐢", say: "Olha a tartaruga!", f: 330 },
+  { e: "🐳", say: "Olha a baleia!", f: 262 },
+  { e: "🦀", say: "Olha o caranguejo!", f: 440 },
+  { e: "🐬", say: "Olha o golfinho!", f: 659 },
+];
+const TREASURE = ["💎", "👑", "🪙", "⭐", "🐚", "🌈"];
+
+function SeaScene({ ctx }: { ctx: Ctx }) {
+  const [fish] = useState(() => [...SEA].sort(() => Math.random() - 0.5).slice(0, 4).map((c, i) => ({ ...c, k: i, x: 12 + (i % 2) * 48 + Math.random() * 10, y: 18 + Math.floor(i / 2) * 26 })));
+  const [spin, setSpin] = useState<Record<number, number>>({});
+  const [open, setOpen] = useState(false);
+  const taps = useRef(0);
+  const last = useRef(0);
+
+  const tapFish = (k: number, e: React.PointerEvent) => {
+    e.stopPropagation();
+    const c = fish[k];
+    if (!c) return;
+    const p = local(ctx.root.current, e);
+    setSpin((s) => ({ ...s, [k]: (s[k] ?? 0) + 1 }));
+    sounds.pop();
+    playMelody([c.f, c.f * 1.25, c.f * 1.5], 0.12, "sine", 0.1);
+    ctx.burst(p.x, p.y, ["🫧", "💧", "✨"], 7);
+    void ctx.say(c.say);
+    if (++taps.current % 5 === 0) {
+      setOpen(true);
+      ctx.later(() => { sounds.cheer(); const r = ctx.root.current?.getBoundingClientRect(); ctx.burst((r?.width ?? 300) / 2, (r?.height ?? 600) - 170, TREASURE, 12); void ctx.say(rnd(["Um tesouro!", "Uau!", "Oba!"])); }, 300);
+      ctx.later(() => setOpen(false), 3500);
+    }
+  };
+
+  const bubbles = (e: React.PointerEvent) => {
+    if (e.buttons === 0 && e.type === "pointermove") return;
+    const now = performance.now();
+    if (now - last.current < 90) return;
+    last.current = now;
+    const p = local(ctx.root.current, e);
+    ctx.burst(p.x, p.y, ["🫧"], 3);
+    playNote("caixinha", PENTA[Math.floor(Math.random() * PENTA.length)] ?? 440, 0, 0.8);
+  };
+
+  return (
+    <div className="absolute inset-0 bg-gradient-to-b from-joy-sky/40 to-joy-sky" onPointerDown={bubbles} onPointerMove={bubbles}>
+      <div className="pointer-events-none absolute bottom-24 left-4 text-6xl" aria-hidden>🌿</div>
+      <div className="pointer-events-none absolute bottom-24 right-6 text-5xl" aria-hidden>🪸</div>
+      {fish.map((c) => (
+        <button
+          key={c.k}
+          type="button"
+          aria-label={c.say}
+          onPointerDown={(e) => tapFish(c.k, e)}
+          className="absolute flex h-32 w-32 items-center justify-center animate-bob"
+          style={{ left: `${c.x}%`, top: `${c.y}%`, animationDelay: `${c.k * 0.4}s` }}
+        >
+          <span key={spin[c.k] ?? 0} className="text-[5.5rem] leading-none" style={{ display: "inline-block", animation: spin[c.k] ? "spin 0.6s ease-out" : undefined }}>{c.e}</span>
+        </button>
+      ))}
+      <div className="pointer-events-none absolute bottom-24 left-1/2 -translate-x-1/2 text-7xl transition-transform duration-300" style={{ transform: `translateX(-50%) scale(${open ? 1.3 : 1})` }} aria-hidden>
+        {open ? "✨🧰✨" : "🧰"}
+      </div>
     </div>
   );
 }
