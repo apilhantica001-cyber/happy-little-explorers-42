@@ -137,7 +137,7 @@ type GameProps = {
 };
 
 /* ---------- moving / popping targets (sky, bubbles, sea, garden) ---------- */
-type It = { id: number; x: number; y: number; vx: number; vy: number; emoji: string; good: boolean; bg?: string; life: number; t: number; shake?: number };
+type It = { id: number; x: number; y: number; vx: number; vy: number; emoji: string; good: boolean; bg?: string | undefined; life: number; t: number; shake?: number };
 const FISH = ["🐟", "🐠", "🐡", "🐙", "🦀", "🐢", "🦈", "🐬"];
 const HOLES = [[20, 40], [50, 40], [80, 40], [20, 62], [50, 62], [80, 62], [20, 82], [50, 82], [80, 82]];
 
