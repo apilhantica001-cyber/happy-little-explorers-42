@@ -303,3 +303,27 @@
 .sea-sway { transform-origin: bottom center; animation: sea-sway 3s ease-in-out infinite; }
 @keyframes sea-sway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 @media (prefers-reduced-motion: reduce) { .magic-twinkle, .magic-line, .magic-wobble > span, .magic-arrow-up, .sea-wave, .sea-rock, .sea-sway { animation: none; } }
+
+/* Céu Mágico challenges */
+.ch-fill { background: linear-gradient(90deg, var(--joy-mint), var(--joy-sun), var(--joy-bubble)); background-size: 200% 100%; animation: ch-flow 2s linear infinite; }
+@keyframes ch-flow { to { background-position: -200% 0; } }
+.ch-item { animation: ch-in .35s cubic-bezier(.3,1.6,.5,1); touch-action: none; }
+@keyframes ch-in { from { scale: 0; } to { scale: 1; } }
+.ch-no { animation: wiggle .4s; }
+.ch-peek { animation: ch-peek .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes ch-peek { from { transform: translateY(40px) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.ch-float { transform: translate(-50%,-50%); animation: ch-floatup .9s ease-out forwards; text-shadow: 0 2px 6px var(--background); }
+@keyframes ch-floatup { to { transform: translate(-50%, -140%) scale(1.4); opacity: 0; } }
+.ch-combo { transform: translateX(-50%); animation: ch-combo .5s cubic-bezier(.3,1.8,.5,1); }
+@keyframes ch-combo { from { transform: translateX(-50%) scale(2.2); opacity: 0; } }
+@keyframes ch-shake { 25% { transform: translate(-4px, 2px); } 50% { transform: translate(4px,-2px); } 75% { transform: translate(-2px,1px); } }
+.ch-parade { animation: magic-parade 3.2s ease-in-out forwards; }
+.ch-win { animation: ch-in .4s ease-out; }
+.ch-medal { animation: ch-medal 1.4s cubic-bezier(.3,1.6,.5,1), bob 2s ease-in-out 1.4s infinite; filter: drop-shadow(0 0 30px var(--joy-sun)); }
+@keyframes ch-medal { 0% { transform: scale(0) rotate(-200deg); } 60% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
+.ch-pulse, .ch-chip { animation: ch-pulse 1.6s ease-in-out infinite; }
+@keyframes ch-pulse { 50% { transform: scale(1.08); } }
+.ch-target { animation: ch-medal .6s cubic-bezier(.3,1.6,.5,1); }
+.ch-want { animation: magic-wob 1.6s ease-in-out infinite; }
+.ch-barn { animation: magic-jump .5s; }
+.ch-pop { animation: ch-in .4s cubic-bezier(.3,1.6,.5,1) backwards; touch-action: none; }

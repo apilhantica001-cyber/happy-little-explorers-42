@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { isNarrating, playAnimalSound, playInstrument, playMelody, playNote, sounds, speak, tone, type SpeechPart } from "./audio";
 import { ANIMALS, COLORS, COLOR_EN, INSTRUMENTS, type Item } from "./data";
+import { MagicChallenge, getMedals } from "./magic-challenge";
+import { LEVELS, type Level } from "./challenge-rules";
 
 /**
  * "Céu Mágico" — free play with no right or wrong answer, split into five
@@ -45,6 +47,10 @@ export function MagicSky() {
   const root = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<SceneId>("ceu");
   const lastSay = useRef(0);
+  const [challenge, setChallenge] = useState<Level | null>(null);
+  const [round, setRound] = useState(0);
+  const [medals, setMedals] = useState<Record<string, boolean>>({});
+  useEffect(() => { setMedals(getMedals()); }, [challenge, round]);
   const timers = useRef<number[]>([]);
   useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
 
@@ -94,13 +100,40 @@ export function MagicSky() {
       data-scene={scene}
       className={`magic-sky magic-${scene} relative h-[calc(100dvh-2rem)] w-full max-w-3xl touch-none select-none overflow-hidden rounded-4xl shadow-soft`}
     >
-      {scene === "ceu" && <SkyScene ctx={ctx} />}
-      {scene === "fazenda" && <FarmScene ctx={ctx} />}
-      {scene === "bolhas" && <BubbleScene ctx={ctx} />}
-      {scene === "musica" && <MusicScene ctx={ctx} />}
-      {scene === "jardim" && <GardenScene ctx={ctx} />}
-      {scene === "mar" && <SeaScene ctx={ctx} />}
-      <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2" aria-label="Mundos" data-parent-controls>
+      {challenge ? (
+        <MagicChallenge
+          key={`${scene}-${challenge}-${round}`}
+          scene={scene}
+          level={challenge}
+          say={(...p) => { lastSay.current = 0; return ctx.say(...p); }}
+          burst={ctx.burst}
+          onExit={() => setChallenge(null)}
+          onLevel={(lv) => { setChallenge(lv); setRound((r) => r + 1); }}
+        />
+      ) : (
+        <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 gap-2" data-parent-controls aria-label="Desafios">
+          {LEVELS.map((lv, i) => (
+            <button
+              key={lv}
+              type="button"
+              aria-label={`Desafio ${lv}`}
+              onClick={() => { sounds.transition(); setChallenge(lv); }}
+              className="ch-chip relative flex h-14 items-center gap-1 rounded-full px-3 text-xl font-extrabold shadow-soft active:scale-90"
+              style={{ background: ["var(--joy-mint)", "var(--joy-sun)", "var(--joy-bubble)"][i], animationDelay: `${i * 0.3}s` }}
+            >
+              {"⭐".repeat(i + 1)}
+              {medals[`${scene}:${lv}`] && <span className="absolute -right-1 -top-2 text-xl">{["🥉", "🥈", "🥇"][i]}</span>}
+            </button>
+          ))}
+        </div>
+      )}
+      {!challenge && scene === "ceu" && <SkyScene ctx={ctx} />}
+      {!challenge && scene === "fazenda" && <FarmScene ctx={ctx} />}
+      {!challenge && scene === "bolhas" && <BubbleScene ctx={ctx} />}
+      {!challenge && scene === "musica" && <MusicScene ctx={ctx} />}
+      {!challenge && scene === "jardim" && <GardenScene ctx={ctx} />}
+      {!challenge && scene === "mar" && <SeaScene ctx={ctx} />}
+      {!challenge && <nav className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2" aria-label="Mundos" data-parent-controls>
         {SCENES.map((s) => (
           <button
             key={s.id}
@@ -112,7 +145,7 @@ export function MagicSky() {
             {s.icon}
           </button>
         ))}
-      </nav>
+      </nav>}
     </div>
   );
 }
