@@ -1,22 +1,23 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { challengeConfig, nextCombo, pointsFor } from "./challenge-rules";
 
 describe("Céu Mágico challenges", () => {
   it("each level needs more points than the previous", () => {
-    expect(challengeConfig("facil").goal).toBe(15);
-    expect(challengeConfig("medio").goal).toBe(25);
-    expect(challengeConfig("dificil").goal).toBe(40);
+    assert.equal(challengeConfig("facil").goal, 15);
+    assert.equal(challengeConfig("medio").goal, 25);
+    assert.equal(challengeConfig("dificil").goal, 40);
   });
   it("harder levels are faster", () => {
-    expect(challengeConfig("dificil").speed).toBeGreaterThan(challengeConfig("medio").speed);
-    expect(challengeConfig("medio").speed).toBeGreaterThan(challengeConfig("facil").speed);
+    assert.ok(challengeConfig("dificil").speed > challengeConfig("medio").speed);
+    assert.ok(challengeConfig("medio").speed > challengeConfig("facil").speed);
   });
   it("a miss resets the combo but never removes points", () => {
-    expect(nextCombo(7, false)).toBe(0);
-    expect(pointsFor(0)).toBeGreaterThanOrEqual(0);
+    assert.equal(nextCombo(7, false), 0);
+    assert.ok(pointsFor(0) >= 0);
   });
   it("every 5th hit in a row is worth 2", () => {
-    expect(pointsFor(5)).toBe(2);
-    expect(pointsFor(4)).toBe(1);
+    assert.equal(pointsFor(5), 2);
+    assert.equal(pointsFor(4), 1);
   });
 });

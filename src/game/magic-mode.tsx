@@ -111,7 +111,7 @@ export function MagicSky() {
           onLevel={(lv) => { setChallenge(lv); setRound((r) => r + 1); }}
         />
       ) : (
-        <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 gap-2" data-parent-controls aria-label="Desafios">
+        <div className="absolute left-1/2 top-20 z-20 flex -translate-x-1/2 gap-2" data-parent-controls aria-label="Desafios">
           {LEVELS.map((lv, i) => (
             <button
               key={lv}

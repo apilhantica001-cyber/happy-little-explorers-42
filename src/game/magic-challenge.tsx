@@ -91,14 +91,14 @@ export function MagicChallenge({ scene, level, say, burst, onExit, onLevel }: Pr
   return (
     <div ref={box} data-parent-controls data-challenge={scene} data-level={level} className="absolute inset-0 z-10" key={shake} style={{ animation: shake ? "ch-shake .35s" : undefined }}>
       {/* progress */}
-      <div className="absolute inset-x-16 top-3 z-20 h-12 rounded-full bg-card/85 p-1.5 shadow-soft" aria-label={`${points} de ${cfg.goal}`}>
+      <div className="absolute inset-x-4 top-20 z-20 h-12 rounded-full bg-card/85 p-1.5 shadow-soft" aria-label={`${points} de ${cfg.goal}`}>
         <div className="ch-fill h-full rounded-full transition-[width] duration-500" style={{ width: `${Math.max(6, pct)}%` }} />
         <span className="absolute top-1/2 text-3xl transition-[left] duration-500" style={{ left: `calc(${pct}% - 1.6rem)`, transform: "translateY(-50%)" }}>🚀</span>
         <span className="absolute right-2 top-1/2 -translate-y-1/2 text-2xl">{MEDAL[level]}</span>
         <span data-points className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-extrabold text-foreground">{points}/{cfg.goal}</span>
       </div>
-      {combo >= 3 && !done && <div key={combo} className="ch-combo absolute left-1/2 top-16 z-20 text-3xl font-extrabold text-foreground">🔥 x{combo}</div>}
-      <button type="button" aria-label="Sair do desafio" onClick={onExit} className="absolute right-2 top-2 z-30 h-12 w-12 rounded-full bg-card/85 text-2xl shadow-soft">✕</button>
+      {combo >= 3 && !done && <div key={combo} className="ch-combo absolute left-1/2 top-36 z-20 text-3xl font-extrabold text-foreground">🔥 x{combo}</div>}
+      <button type="button" aria-label="Sair do desafio" onClick={onExit} className="absolute left-2 top-2 z-30 h-12 w-12 rounded-full bg-card/85 text-2xl shadow-soft">✕</button>
 
       {scene === "ceu" && <Mover kind="ceu" {...props} />}
       {scene === "bolhas" && <Mover kind="bolhas" {...props} say={say} />}
