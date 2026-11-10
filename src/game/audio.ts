@@ -98,6 +98,27 @@ function getCtx(): AudioContext | null {
     fxGain.connect(comp);
     voiceGain.connect(comp);
     musicGain.connect(comp);
+    // Soft "playroom" reverb shared by effects and music: makes sounds feel alive, not dry beeps.
+    const rev = ctx.createConvolver();
+    const len = Math.floor(ctx.sampleRate * 1.8);
+    const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+    }
+    rev.buffer = ir;
+    const revOut = ctx.createGain();
+    revOut.gain.value = 0.32;
+    const tone = ctx.createBiquadFilter();
+    tone.type = "lowpass";
+    tone.frequency.value = 4500;
+    rev.connect(tone).connect(revOut).connect(comp);
+    const fxSend = ctx.createGain();
+    fxSend.gain.value = 0.35;
+    const musicSend = ctx.createGain();
+    musicSend.gain.value = 0.6;
+    fxGain.connect(fxSend).connect(rev);
+    musicGain.connect(musicSend).connect(rev);
     applyVolume();
   }
   if (ctx.state === "suspended") void ctx.resume();
@@ -400,37 +421,53 @@ const once = (name: string, gap: number, fn: () => void) => () => {
 export const sounds = {
   /** bubble pop */
   pop: once("pop", 60, () => {
-    tone({ freq: 380, to: 1400, duration: 0.09, type: "sine", gain: 0.22 });
+    // water-drop "plop" with a random pitch so bubbles never sound identical
+    const v = 0.85 + Math.random() * 0.4;
+    tone({ freq: 380 * v, to: 1500 * v, duration: 0.08, type: "sine", gain: 0.22 });
+    tone({ freq: 1800 * v, to: 2400 * v, duration: 0.04, type: "sine", delay: 0.05, gain: 0.05 });
     noise(0.05, 0, 0.05, 3000, "highpass");
   }),
-  /** balloon pop: airy burst */
+  /** balloon pop: airy burst + little giggle-bells */
   balloon: once("balloon", 60, () => {
-    noise(0.18, 0, 0.16, 1800, "bandpass");
+    noise(0.2, 0, 0.16, 1600 + Math.random() * 600, "bandpass");
     tone({ freq: 700, to: 160, duration: 0.12, type: "triangle", gain: 0.1 });
+    playNote("sino", 1318 + Math.random() * 200, 0.08, 0.5);
   }),
-  tap: once("tap", 60, () => tone({ freq: 520, duration: 0.1, type: "triangle", gain: 0.14 })),
-  swipe: once("swipe", 120, () => noise(0.22, 0, 0.05, 1200, "bandpass")),
-  /** drag-and-fit click */
+  tap: once("tap", 60, () => playNote("xilofone", [523, 587, 659, 784][Math.floor(Math.random() * 4)]!, 0, 0.6)),
+  swipe: once("swipe", 120, () => {
+    noise(0.25, 0, 0.05, 1200, "bandpass");
+    tone({ freq: 600, to: 1100, duration: 0.2, type: "sine", gain: 0.04 });
+  }),
+  /** drag-and-fit: wooden "toc" + happy chime */
   snap: once("snap", 100, () => {
-    tone({ freq: 1200, to: 800, duration: 0.05, type: "square", gain: 0.06 });
-    tone({ freq: 660, duration: 0.14, type: "sine", delay: 0.05, gain: 0.18 });
-    tone({ freq: 990, duration: 0.18, type: "sine", delay: 0.1, gain: 0.12 });
+    tone({ freq: 900, to: 500, duration: 0.04, type: "triangle", gain: 0.14 });
+    noise(0.03, 0, 0.06, 2500, "bandpass");
+    playNote("xilofone", 784, 0.06, 0.8);
+    playNote("xilofone", 1175, 0.13, 0.6);
   }),
-  /** correct answer: soft bells */
-  yay: once("yay", 400, () => playMelody([659, 784, 1046], 0.1, "sine", 0.16)),
-  /** end of an activity */
+  /** correct answer: bells + glockenspiel, a few variations */
+  yay: once("yay", 400, () => {
+    const sets = [[659, 784, 1046], [523, 659, 784, 1046], [784, 988, 1175], [698, 880, 1046]];
+    sets[Math.floor(Math.random() * sets.length)]!.forEach((f, i) => playNote("sino", f, i * 0.09, 0.9));
+  }),
+  /** end of an activity: little fanfare */
   cheer: once("cheer", 800, () => {
-    playMelody([523, 659, 784, 1046, 1318], 0.1, "sine", 0.15);
-    tone({ freq: 2093, duration: 0.5, type: "sine", delay: 0.5, gain: 0.05 });
+    [523, 659, 784, 1046].forEach((f, i) => playNote("xilofone", f, i * 0.1, 0.9));
+    playNote("trompete", 784, 0.42, 0.5);
+    playNote("trompete", 1046, 0.62, 0.6);
+    playMelody([2093, 2637, 3136], 0.06, "sine", 0.04);
   }),
-  /** "not that one" - playful, never negative */
-  gentle: once("gentle", 300, () => tone({ freq: 330, to: 440, duration: 0.18, type: "sine", gain: 0.12 })),
-  /** star / magic */
-  sparkle: once("sparkle", 200, () => playMelody([1568, 1976, 2349, 3136], 0.06, "sine", 0.07)),
+  /** "not that one" - playful "boing", never negative */
+  gentle: once("gentle", 300, () => tone({ freq: 220, to: 440, duration: 0.22, type: "sine", gain: 0.13, vibrato: 12 })),
+  /** star / magic: twinkle cascade */
+  sparkle: once("sparkle", 200, () => {
+    [1568, 1976, 2349, 3136].forEach((f, i) => playNote("sino", f, i * 0.05, 0.35));
+  }),
   /** open box: pop + surprise */
   box: once("box", 300, () => {
     tone({ freq: 300, to: 900, duration: 0.12, type: "sine", gain: 0.2 });
-    playMelody([784, 988, 1175, 1568], 0.07, "triangle", 0.1);
+    noise(0.12, 0, 0.06, 2000, "bandpass");
+    [784, 988, 1175, 1568].forEach((f, i) => playNote("caixinha", f, 0.1 + i * 0.07, 0.9));
   }),
   /** between activities */
   transition: once("transition", 500, () => {
@@ -502,19 +539,36 @@ export async function playAnimalSound(id: string) {
 
 export const thingSounds: Record<string, () => void> = {
   carro: () => {
-    tone({ freq: 520, duration: 0.14, type: "triangle", gain: 0.12 });
-    tone({ freq: 520, duration: 0.2, type: "triangle", delay: 0.2, gain: 0.12 });
+    // friendly two-tone "bi-bi"
+    [0, 0.2].forEach((d) => {
+      tone({ freq: 494, duration: 0.14, type: "triangle", delay: d, gain: 0.1 });
+      tone({ freq: 622, duration: 0.14, type: "triangle", delay: d, gain: 0.07 });
+    });
   },
-  onibus: () => tone({ freq: 294, duration: 0.45, type: "triangle", gain: 0.12 }),
-  aviao: () => noise(1, 0, 0.05, 700, "bandpass"),
-  barco: () => tone({ freq: 196, duration: 0.8, type: "triangle", gain: 0.14 }),
+  onibus: () => {
+    noise(0.3, 0, 0.03, 300);
+    tone({ freq: 294, duration: 0.45, type: "triangle", delay: 0.15, gain: 0.1 });
+    tone({ freq: 370, duration: 0.45, type: "triangle", delay: 0.15, gain: 0.07 });
+  },
+  aviao: () => {
+    noise(1.1, 0, 0.05, 700, "bandpass");
+    tone({ freq: 300, to: 520, duration: 1, type: "sine", gain: 0.05 });
+  },
+  barco: () => {
+    tone({ freq: 196, duration: 0.8, type: "triangle", gain: 0.12, vibrato: 3 });
+    tone({ freq: 247, duration: 0.8, type: "triangle", gain: 0.06 });
+    noise(0.6, 0.3, 0.03, 500);
+  },
   trem: () => {
-    tone({ freq: 600, duration: 0.25, type: "triangle", gain: 0.12 });
-    tone({ freq: 750, duration: 0.4, type: "triangle", delay: 0.28, gain: 0.12 });
+    [0, 0.15, 0.3, 0.45].forEach((d) => noise(0.08, d, 0.05, 900, "bandpass"));
+    tone({ freq: 660, duration: 0.25, type: "sine", delay: 0.6, gain: 0.1 });
+    tone({ freq: 880, duration: 0.45, type: "sine", delay: 0.88, gain: 0.1, vibrato: 4 });
   },
-  bola: () => tone({ freq: 300, to: 150, duration: 0.15, type: "sine", gain: 0.2 }),
-  boneca: () => playMelody([784, 988, 1175], 0.12, "sine"),
-  ursinho: () => tone({ freq: 250, to: 200, duration: 0.4, type: "triangle", vibrato: 5, gain: 0.14 }),
+  bola: () => {
+    [0, 0.22, 0.38, 0.5].forEach((d, i) => tone({ freq: 300, to: 150, duration: 0.12, type: "sine", delay: d, gain: 0.2 / (i + 1) }));
+  },
+  boneca: () => [784, 988, 1175, 1568].forEach((f, i) => playNote("caixinha", f, i * 0.12)),
+  ursinho: () => tone({ freq: 250, to: 200, duration: 0.45, type: "triangle", vibrato: 5, gain: 0.14 }),
   blocos: () => {
     tone({ freq: 500, duration: 0.07, type: "square", gain: 0.06 });
     tone({ freq: 400, duration: 0.07, type: "square", delay: 0.12, gain: 0.06 });
@@ -716,6 +770,14 @@ const SONGS: Song[] = [
   { bpm: 100, chords: [[7, 11, 14], [0, 4, 7], [2, 6, 9], [7, 11, 14]], melody: [19, 19, 21, 19, 16, null, 14, null, 18, 18, 19, 21, 19, null, null, null], lead: "xilofone", pad: "piano", bass: true, shaker: true },
   // dreamy flute (Am - F - C - G)
   { bpm: 70, chords: [[-3, 0, 4], [-7, -3, 0], [0, 4, 7], [-5, -1, 2]], melody: [12, null, 11, 9, null, null, 7, null, 9, null, 12, null, 14, null, null, null], lead: "flauta", pad: "caixinha", bass: false },
+  // bouncy parade (C - F - G - C)
+  { bpm: 104, chords: [[0, 4, 7], [5, 9, 12], [7, 11, 14], [0, 4, 7]], melody: [12, 14, 16, 12, 17, null, 16, null, 14, 16, 17, 19, 16, null, 12, null], lead: "xilofone", pad: "piano", bass: true, shaker: true },
+  // rainy-day piano (Am - Dm - G - C)
+  { bpm: 64, chords: [[-3, 0, 4], [2, 5, 9], [-5, -1, 2], [0, 4, 7]], melody: [16, null, 14, null, 12, null, null, null, 14, null, 12, 11, 12, null, null, null], lead: "piano", pad: "caixinha", bass: true },
+  // little seaside guitar (D - G - A - D)
+  { bpm: 88, chords: [[2, 6, 9], [7, 11, 14], [9, 13, 16], [2, 6, 9]], melody: [14, 18, 21, null, 19, 18, 16, null, 16, 18, 19, 21, 18, null, null, null], lead: "flauta", pad: "violao", bass: true, shaker: true },
+  // goodnight bells (F - Dm - Bb - C)
+  { bpm: 60, chords: [[5, 9, 12], [2, 5, 9], [-2, 2, 5], [0, 4, 7]], melody: [17, null, null, 21, null, null, 19, null, 17, null, 14, null, 16, null, null, null], lead: "sino", pad: "caixinha", bass: false },
 ];
 export const SONG_COUNT = SONGS.length;
 let theme = Math.floor(Math.random() * SONGS.length);
@@ -734,11 +796,21 @@ function musicTick() {
   const chord = song.chords[bar]!;
   const b8 = beat % 8;
   // gentle arpeggiated chord
-  if (b8 % 2 === 0) playNote(song.pad, st(chord[(b8 / 2) % chord.length]!), 0.02, 0.55, "music");
-  if (song.bass && (b8 === 0 || b8 === 4)) playNote("piano", st(chord[0]! - 12), 0.02, 0.6, "music");
-  if (song.shaker && b8 % 2 === 1) playNote("chocalho", 1, 0.02, 0.25, "music");
+  // small human timing/velocity wobble so the loop never feels mechanical
+  const h = () => 0.02 + Math.random() * 0.015;
+  const vel = (v: number) => v * (0.85 + Math.random() * 0.3);
+  if (b8 % 2 === 0) playNote(song.pad, st(chord[(b8 / 2) % chord.length]!), h(), vel(0.5), "music");
+  if (song.bass && (b8 === 0 || b8 === 4)) playNote("piano", st(chord[0]! - 12), h(), vel(0.6), "music");
+  if (song.shaker && b8 % 2 === 1) playNote("chocalho", 1, h(), vel(0.22), "music");
   const m = song.melody[beat % song.melody.length];
-  if (m !== null && m !== undefined) playNote(song.lead, st(m), 0.02, 0.7, "music");
+  // 2nd loop: melody an octave up on bells; 3rd loop: melody plus soft harmony
+  if (m !== null && m !== undefined) {
+    if (loopsOnSong === 1) playNote("sino", st(m + 12), h(), vel(0.4), "music");
+    else playNote(song.lead, st(m), h(), vel(0.7), "music");
+    if (loopsOnSong === 2) playNote(song.lead, st(m - 3), h() + 0.01, vel(0.3), "music");
+  }
+  // gentle sparkle at the start of every 4 bars
+  if (beat % (song.chords.length * 8) === 0 && beat > 0) playNote("sino", st(24), 0.05, 0.25, "music");
   beat++;
   // after a few loops, a breath of silence, then another song
   if (beat % (song.chords.length * 8) === 0) {
